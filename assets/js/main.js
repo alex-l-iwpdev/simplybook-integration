@@ -1,0 +1,48 @@
+jQuery( document ).ready( function( $ ) {
+	$( '.more' ).click( function( e ) {
+		e.preventDefault();
+		var more = $( this );
+		if ( more.prev().hasClass( 'open' ) ) {
+			more.prev().removeClass( 'open' ).slideUp();
+			more.text( 'Читати детальніше' ).removeClass( 'arrow-top' );
+			more.parent().find( '.specialization' ).show();
+		} else {
+			more.prev().addClass( 'open' ).slideDown();
+			more.text( 'Сховати' ).addClass( 'arrow-top' );
+			more.parent().find( '.specialization' ).hide();
+		}
+
+	} );
+
+	const doctorsMenu = $( '.doctors-category-menu' );
+	if ( doctorsMenu.length ) {
+		if ( $( window ).width() >= 1200 ) {
+			if ( doctorsMenu.children().length > 5 ) {
+				$( '.doctors-category-menu' ).slick( {
+					variableWidth: true,
+					infinite: false,
+					arrows: false,
+					dots: true,
+				} );
+			}
+		} else {
+			$( '.doctors-category-menu' ).slick( {
+				variableWidth: true,
+				infinite: false,
+				arrows: false,
+				dots: true,
+			} );
+		}
+		console.log( doctorsMenu.find( 'li > a' ) );
+
+		doctorsMenu.find( 'li > a' ).click( function( e ) {
+			e.preventDefault();
+
+			let url = new URL( window.location.href );
+			url.searchParams.set( 'category_id', $( this ).data( 'service_sb_id' ) );
+			window.location.href = url.toString();
+		} );
+	}
+
+
+} );
