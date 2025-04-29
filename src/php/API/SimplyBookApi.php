@@ -19,15 +19,16 @@ class SimplyBookApi extends SimplyBookApiAbstract {
 	 * Api base endpoint.
 	 */
 	const  API_ENDPOINT = 'https://user-api-v2.simplybook.me';
+	//phpcs:disable
 
 	/**
 	 * SimplyBookApi construct.
 	 */
 	public function __construct() {
-		//phpcs:disable
+
 		parent::__construct();
-		//phpcs:enable
 	}
+	//phpcs:enable
 
 	/**
 	 * Get token.

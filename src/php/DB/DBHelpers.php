@@ -174,6 +174,13 @@ class DBHelpers {
 		return true;
 	}
 
+	/**
+	 * Set provider.
+	 *
+	 * @param array $providers_data Providers data.
+	 *
+	 * @return bool
+	 */
 	public static function set_provider( array $providers_data ): bool {
 		global $wpdb;
 		$table_name_providers = $wpdb->prefix . 'sbip_providers';

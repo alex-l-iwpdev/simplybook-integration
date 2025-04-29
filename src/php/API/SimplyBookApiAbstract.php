@@ -19,6 +19,7 @@ abstract class SimplyBookApiAbstract {
 
 	/**
 	 * Client JsonRpcClient.
+	 *
 	 * @var string $client Client.
 	 */
 	public $client;

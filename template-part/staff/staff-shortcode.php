@@ -70,7 +70,8 @@ $active = (int) $_GET['category_id'] ?? $service_categories[0]->service_sb_id;
 											]
 										)
 									);
-									?>">
+									?>
+">
 								<?php esc_attr_e( 'записатись на прийом', 'simplybook-integration' ); ?>
 							</a>
 						</div>
@@ -78,6 +79,7 @@ $active = (int) $_GET['category_id'] ?? $service_categories[0]->service_sb_id;
 					<?php
 				}
 			}
-		} ?>
+		}
+		?>
 	</div>
 </div>
