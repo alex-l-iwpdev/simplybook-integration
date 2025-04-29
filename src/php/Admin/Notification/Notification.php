@@ -47,6 +47,7 @@ class Notification {
 			'<div id="bpm-php-nope" class="notice notice-error is-dismissible"><p>%s</p></div>',
 			wp_kses(
 				sprintf(
+				//phpcs:ignore WordPress.WP.I18n.MissingTranslatorsComment
 					__( 'You are not filled with the API Key for your integration. To get the key, follow the <a href="%s">Link</a>', 'simplybook-integration' ),
 					'https://your_login.secure.simplybook.it/v2/management/#plugins/api/'
 				),
@@ -86,7 +87,7 @@ class Notification {
 	/**
 	 * Api error notification.
 	 *
-	 * @param string $message
+	 * @param string $message Message.
 	 *
 	 * @return void
 	 */

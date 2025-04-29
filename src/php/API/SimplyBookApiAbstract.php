@@ -20,8 +20,6 @@ abstract class SimplyBookApiAbstract {
 
 	/**
 	 * Client JsonRpcClient.
-	 *
-	 * @var
 	 */
 	public $client;
 
@@ -40,8 +38,9 @@ abstract class SimplyBookApiAbstract {
 	/**
 	 * Send POST query.
 	 *
-	 * @param string $url  Url.
-	 * @param array  $data Date.
+	 * @param string $url     Url.
+	 * @param array  $data    Date.
+	 * @param array  $headers Headers.
 	 *
 	 * @return array
 	 * @throws GuzzleException
@@ -83,8 +82,9 @@ abstract class SimplyBookApiAbstract {
 	/**
 	 * Send GET query.
 	 *
-	 * @param string $url  Url.
-	 * @param array  $data Date.
+	 * @param string $url     Url.
+	 * @param array  $data    Date.
+	 * @param array  $headers Headers.
 	 *
 	 * @return array
 	 * @throws GuzzleException

@@ -75,8 +75,8 @@ class Main {
 	/**
 	 * Get template part Simplybook integration.
 	 *
-	 * @param $template_name
-	 * @param $args
+	 * @param string     $template_name Template name.
+	 * @param array|null $args          Arguments.
 	 *
 	 * @return void
 	 */

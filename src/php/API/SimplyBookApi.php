@@ -19,7 +19,7 @@ class SimplyBookApi extends SimplyBookApiAbstract {
 	/**
 	 * Api base endpoint.
 	 */
-	const string API_ENDPOINT = 'https://user-api-v2.simplybook.me';
+	const  API_ENDPOINT = 'https://user-api-v2.simplybook.me';
 
 	/**
 	 * SimplyBookApi construct.
@@ -49,9 +49,12 @@ class SimplyBookApi extends SimplyBookApiAbstract {
 
 		if ( ! $response['success'] ) {
 			$message = $response['message'];
-			add_action( 'admin_notices', function () use ( $message ) {
-				Notification::is_empty_api_login_notification( $message );
-			} );
+			add_action(
+				'admin_notices',
+				function () use ( $message ) {
+					Notification::is_empty_api_login_notification( $message );
+				}
+			);
 		}
 
 		if ( isset( $response['body'] ) ) {
@@ -173,6 +176,12 @@ class SimplyBookApi extends SimplyBookApiAbstract {
 		}
 	}
 
+	/**
+	 * Get all providers.
+	 *
+	 * @return void
+	 * @throws GuzzleException
+	 */
 	public function get_all_providers(): void {
 		$auth_header   = $this->get_aut_headers();
 		$all_providers = [];

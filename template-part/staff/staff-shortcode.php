@@ -9,13 +9,14 @@ use Iwpdev\SimplybookIntegration\DB\DBHelpers;
 use Iwpdev\SimplybookIntegration\Main;
 
 $service_categories = DBHelpers::get_all_service_category();
-$title              = $atts['title'];
-$active             = $_GET['category_id'] ?? $service_categories[0]->service_sb_id;
-
+$staff_title        = $atts['title'];
+//phpcs:disable
+$active = (int) $_GET['category_id'] ?? $service_categories[0]->service_sb_id;
+//phpcs:enable
 ?>
 <div class="doctors-category">
 	<div class="doctors-category-filter">
-		<h2><?php echo wp_kses_post( $title ); ?></h2>
+		<h2><?php echo wp_kses_post( $staff_title ); ?></h2>
 		<div class="doctors-category-wrapper">
 			<?php if ( ! empty( $service_categories ) ) { ?>
 				<ul class="doctors-category-menu">
@@ -55,16 +56,19 @@ $active             = $_GET['category_id'] ?? $service_categories[0]->service_sb
 							<a href="#" class="more">
 								<?php esc_attr_e( 'Читати детальніше', 'simplybook-integration' ); ?>
 							</a>
-							<a href="#" class="button"
-							   data-provider_ids="<?php echo esc_attr(
-								   implode(
-									   ',',
-									   [
-										   $doctor->id_sb,
-										   $doctor->id_s_dublicat ?? '',
-									   ]
-								   )
-							   ); ?>">
+							<a
+									href="#"
+									class="button"
+									data-provider_ids="<?php echo esc_attr(
+										implode(
+											',',
+											[
+												$doctor->id_sb,
+												$doctor->id_s_dublicat ?? '',
+											]
+										)
+									);
+									?>">
 								<?php esc_attr_e( 'записатись на прийом', 'simplybook-integration' ); ?>
 							</a>
 						</div>

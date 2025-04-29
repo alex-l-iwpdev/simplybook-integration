@@ -27,11 +27,11 @@ class DBHelpers {
 	public static function set_service_category( int $id, string $category_name, int $service_id, bool $is_visible = false ): bool {
 		global $wpdb;
 		$table_name_services_category = $wpdb->prefix . 'sbip_services_category';
-
+		//phpcs:disable
 		$service_category_isset = $wpdb->get_row(
 			$wpdb->prepare( "SELECT * FROM $table_name_services_category WHERE category_id = %d AND service_sb_id = %d", $id, $service_id )
 		);
-
+		//phpcs:enable
 		if ( empty( $service_category_isset ) ) {
 			$response = $wpdb->insert(
 				$table_name_services_category,
@@ -91,11 +91,11 @@ class DBHelpers {
 	public static function set_service( array $service_data ): bool {
 		global $wpdb;
 		$table_name_services = $wpdb->prefix . 'sbip_services';
-
+		//phpcs:disable
 		$service_isset = $wpdb->get_row(
 			$wpdb->prepare( "SELECT * FROM $table_name_services WHERE service_sb_id = %d AND provider_id_sb = %d", $service_data['id'], $service_data['provider'] )
 		);
-
+		//phpcs:enable
 		if ( empty( $service_isset ) ) {
 			$response = $wpdb->insert(
 				$table_name_services,
@@ -177,11 +177,11 @@ class DBHelpers {
 		global $wpdb;
 		$table_name_providers = $wpdb->prefix . 'sbip_providers';
 
-
+		//phpcs:disable
 		$providers_isset = $wpdb->get_row(
 			$wpdb->prepare( "SELECT * FROM $table_name_providers WHERE id_sb = %d", $providers_data['id'] )
 		);
-
+		//phpcs:enable
 		if ( empty( $providers_isset ) ) {
 			$response = $wpdb->insert(
 				$table_name_providers,

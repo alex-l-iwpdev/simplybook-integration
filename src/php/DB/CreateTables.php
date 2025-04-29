@@ -29,6 +29,11 @@ class CreateTables {
 		add_action( 'init', [ $this, 'create_tables' ] );
 	}
 
+	/**
+	 * Create tables.
+	 *
+	 * @return void
+	 */
 	public function create_tables(): void {
 		global $wpdb;
 		$table_name_services          = $wpdb->prefix . 'sbip_services';
