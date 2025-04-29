@@ -12,6 +12,7 @@ use Iwpdev\SimplybookIntegration\Admin\Pages\OptionsPage;
 use Iwpdev\SimplybookIntegration\API\SimplyBookApi;
 use Iwpdev\SimplybookIntegration\DB\CreateTables;
 use Iwpdev\SimplybookIntegration\ShortCodes\SimplybookBanner;
+use Iwpdev\SimplybookIntegration\ShortCodes\SimplybookJobBanner;
 use Iwpdev\SimplybookIntegration\ShortCodes\SimplybookStaff;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -63,10 +64,12 @@ class Main {
 		add_action( OptionsPage::FIELD_PREFIX . 'refresh_token', [ $this, 'refresh_token_crone' ] );
 
 		add_filter( 'cron_schedules', [ $this, 'cron_add_half_hour' ] );
+		add_filter( 'provider_filters', [ $this, 'handler_provider_filters' ], 10, 1 );
 
 		new SimplybookBanner();
 		new SimplybookStaff();
 		new CreateTables();
+		new SimplybookJobBanner();
 	}
 
 	/**
@@ -195,7 +198,7 @@ class Main {
 	 */
 	public function register_coron() {
 		if ( ! wp_next_scheduled( OptionsPage::FIELD_PREFIX . 'refresh_token' ) ) {
-			wp_schedule_event( time(), 'hourly', OptionsPage::FIELD_PREFIX . 'refresh_token' );
+			wp_schedule_event( time(), 'half_hour', OptionsPage::FIELD_PREFIX . 'refresh_token' );
 		}
 	}
 
@@ -228,5 +231,52 @@ class Main {
 			set_transient( OptionsPage::FIELD_PREFIX . 'token', $date_token['body']['token'], HOUR_IN_SECONDS / 2 );
 			update_option( OptionsPage::FIELD_PREFIX . 'refresh_token', $date_token['body']['refresh_token'], true );
 		}
+	}
+
+	/**
+	 * Provider filter.
+	 *
+	 * @param $providers
+	 *
+	 * @return array
+	 */
+	public function handler_provider_filters( $providers ): array {
+		$temp_providers = [];
+		$map            = [];
+
+		foreach ( $providers as $provider ) {
+			$name = rtrim( $provider->name, '*' );
+
+			if ( ! isset( $map[ $name ] ) ) {
+				$map[ $name ] = [
+					'clean'  => null,
+					'dublic' => null,
+				];
+			}
+
+			if ( substr( $provider->name, - 1 ) === '*' ) {
+				$map[ $name ]['dublic'] = $provider;
+			} else {
+				$map[ $name ]['clean'] = $provider;
+			}
+		}
+
+		foreach ( $map as $name => $group ) {
+			if ( $group['clean'] ) {
+				$new_provider = clone $group['clean'];
+
+				if ( $group['dublic'] ) {
+					$new_provider->id_s_dublicat = $group['dublic']->id_sb;
+				}
+
+				$temp_providers[] = $new_provider;
+			} elseif ( $group['dublic'] ) {
+				$new_provider       = clone $group['dublic'];
+				$new_provider->name = rtrim( $new_provider->name, '*' );
+				$temp_providers[]   = $new_provider;
+			}
+		}
+
+		return $temp_providers;
 	}
 }

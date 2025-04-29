@@ -34,7 +34,7 @@ $active             = $_GET['category_id'] ?? $service_categories[0]->service_sb
 	</div>
 	<div class="doctors-profiles">
 		<?php
-		$doctors = DBHelpers::get_all_providers_by_service_category_id( (int) $active );
+		$doctors = apply_filters( 'provider_filters', DBHelpers::get_all_providers_by_service_category_id( (int) $active ) );
 		if ( ! empty( $doctors ) ) {
 			foreach ( $doctors as $key => $doctor ) {
 				if ( $doctor->is_active ) {
@@ -55,7 +55,16 @@ $active             = $_GET['category_id'] ?? $service_categories[0]->service_sb
 							<a href="#" class="more">
 								<?php esc_attr_e( 'Читати детальніше', 'simplybook-integration' ); ?>
 							</a>
-							<a href="#" class="button">
+							<a href="#" class="button"
+							   data-provider_ids="<?php echo esc_attr(
+								   implode(
+									   ',',
+									   [
+										   $doctor->id_sb,
+										   $doctor->id_s_dublicat ?? '',
+									   ]
+								   )
+							   ); ?>">
 								<?php esc_attr_e( 'записатись на прийом', 'simplybook-integration' ); ?>
 							</a>
 						</div>

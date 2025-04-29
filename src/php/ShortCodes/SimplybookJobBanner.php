@@ -35,7 +35,7 @@ class SimplybookJobBanner {
 	 */
 	public function output( $atts, string $content = null ): string {
 		ob_start();
-		Main::sbip_get_template_part( 'staff/job-banner-shortcode', $atts );
+		Main::sbip_get_template_part( 'job-banner/job-banner-shortcode', $atts );
 
 		return ob_get_clean();
 	}
