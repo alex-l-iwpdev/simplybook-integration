@@ -62,8 +62,9 @@ class Main {
 		add_action( 'init', [ $this, 'create_default_pages' ] );
 		add_action( 'admin_head', [ $this, 'register_coron' ] );
 		add_action( OptionsPage::FIELD_PREFIX . 'refresh_token', [ $this, 'refresh_token_crone' ] );
-
+		//phpcs:disable
 		add_filter( 'cron_schedules', [ $this, 'cron_add_half_hour' ] );
+		//phpcs:enable
 		add_filter( 'provider_filters', [ $this, 'handler_provider_filters' ], 10, 1 );
 
 		new SimplybookBanner();
@@ -236,7 +237,7 @@ class Main {
 	/**
 	 * Provider filter.
 	 *
-	 * @param $providers
+	 * @param array $providers Providers.
 	 *
 	 * @return array
 	 */

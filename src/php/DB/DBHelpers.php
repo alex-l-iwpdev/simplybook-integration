@@ -31,7 +31,7 @@ class DBHelpers {
 		$service_category_isset = $wpdb->get_row(
 			$wpdb->prepare( "SELECT * FROM $table_name_services_category WHERE category_id = %d AND service_sb_id = %d", $id, $service_id )
 		);
-		//phpcs:enable
+
 		if ( empty( $service_category_isset ) ) {
 			$response = $wpdb->insert(
 				$table_name_services_category,
@@ -73,7 +73,7 @@ class DBHelpers {
 				]
 			);
 		}
-
+		//phpcs:enable
 		if ( ! $response ) {
 			return false;
 		}
@@ -95,7 +95,7 @@ class DBHelpers {
 		$service_isset = $wpdb->get_row(
 			$wpdb->prepare( "SELECT * FROM $table_name_services WHERE service_sb_id = %d AND provider_id_sb = %d", $service_data['id'], $service_data['provider'] )
 		);
-		//phpcs:enable
+
 		if ( empty( $service_isset ) ) {
 			$response = $wpdb->insert(
 				$table_name_services,
@@ -170,6 +170,7 @@ class DBHelpers {
 			}
 		}
 
+		//phpcs:enable
 		return true;
 	}
 
@@ -181,7 +182,7 @@ class DBHelpers {
 		$providers_isset = $wpdb->get_row(
 			$wpdb->prepare( "SELECT * FROM $table_name_providers WHERE id_sb = %d", $providers_data['id'] )
 		);
-		//phpcs:enable
+
 		if ( empty( $providers_isset ) ) {
 			$response = $wpdb->insert(
 				$table_name_providers,
@@ -248,6 +249,7 @@ class DBHelpers {
 			);
 		}
 
+		//phpcs:enable
 		return true;
 	}
 
@@ -260,9 +262,9 @@ class DBHelpers {
 		global $wpdb;
 		$table_name_services_category = $wpdb->prefix . 'sbip_services_category';
 
-		//phpcs: disable
+		//phpcs:disable
 		$results = $wpdb->get_results( "SELECT * FROM $table_name_services_category WHERE `category_is_active` = 1 GROUP BY `category_sb_id`;" );
-		//phpcs: enable
+		//phpcs:enable
 		if ( empty( $results ) ) {
 			return [];
 		}
@@ -283,9 +285,9 @@ class DBHelpers {
 		$table_name_services  = $wpdb->prefix . 'sbip_services';
 
 		$sql = "SELECT p.* FROM $table_name_services AS s INNER JOIN $table_name_providers AS p ON p.id_sb = s.provider_id_sb WHERE s.service_sb_id = %s;";
-		//phpcs: disable
+		//phpcs:disable
 		$results = $wpdb->get_results( $wpdb->prepare( $sql, $service_category_id ) );
-		//phpcs: enable
+		//phpcs:enable
 		if ( empty( $results ) ) {
 			return [];
 		}

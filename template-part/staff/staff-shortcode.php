@@ -59,7 +59,9 @@ $active = (int) $_GET['category_id'] ?? $service_categories[0]->service_sb_id;
 							<a
 									href="#"
 									class="button"
-									data-provider_ids="<?php echo esc_attr(
+									data-provider_ids="
+									<?php
+									echo esc_attr(
 										implode(
 											',',
 											[

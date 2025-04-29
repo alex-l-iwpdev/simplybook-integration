@@ -7,7 +7,6 @@
 
 namespace Iwpdev\SimplybookIntegration\API;
 
-use GuzzleHttp\Exception\GuzzleException;
 use Iwpdev\SimplybookIntegration\Admin\Notification\Notification;
 use Iwpdev\SimplybookIntegration\Admin\Pages\OptionsPage;
 use Iwpdev\SimplybookIntegration\DB\DBHelpers;
@@ -25,7 +24,9 @@ class SimplyBookApi extends SimplyBookApiAbstract {
 	 * SimplyBookApi construct.
 	 */
 	public function __construct() {
+		//phpcs:disable
 		parent::__construct();
+		//phpcs:enable
 	}
 
 	/**
@@ -71,7 +72,6 @@ class SimplyBookApi extends SimplyBookApiAbstract {
 	 * Get all services category.
 	 *
 	 * @return void
-	 * @throws GuzzleException
 	 */
 	public function get_all_service_category(): void {
 		$all_service_category = [];
@@ -143,7 +143,6 @@ class SimplyBookApi extends SimplyBookApiAbstract {
 	 * Get all service.
 	 *
 	 * @return void
-	 * @throws GuzzleException
 	 */
 	public function get_all_services(): void {
 		$auth_header  = $this->get_aut_headers();
@@ -180,7 +179,6 @@ class SimplyBookApi extends SimplyBookApiAbstract {
 	 * Get all providers.
 	 *
 	 * @return void
-	 * @throws GuzzleException
 	 */
 	public function get_all_providers(): void {
 		$auth_header   = $this->get_aut_headers();
