@@ -315,20 +315,17 @@ class Main {
 		foreach ( $services as $service ) {
 			$service_id = $service->service_sb_id;
 
-			// Если такой service_sb_id ещё не добавлен
 			if ( ! isset( $merged[ $service_id ] ) ) {
 				$new_service               = clone $service;
 				$new_service->providers_id = [ $service->provider_id_sb ];
 				$merged[ $service_id ]     = $new_service;
 			} else {
-				// Добавляем provider_id_sb, если его ещё нет
 				if ( ! in_array( $service->provider_id_sb, $merged[ $service_id ]->providers_id, true ) ) {
 					$merged[ $service_id ]->providers_id[] = $service->provider_id_sb;
 				}
 			}
 		}
 
-		// Возвращаем как обычный индексированный массив
 		return array_values( $merged );
 	}
 
@@ -365,7 +362,7 @@ class Main {
 	 */
 	public function handler_service_sub_description_filter( string $description ): string {
 		$dom = new DOMDocument();
-		libxml_use_internal_errors( true ); // подавить warning-и
+		libxml_use_internal_errors( true );
 
 		$dom->loadHTML( mb_convert_encoding( $description, 'HTML-ENTITIES', 'UTF-8' ) );
 		$xpath = new DOMXPath( $dom );

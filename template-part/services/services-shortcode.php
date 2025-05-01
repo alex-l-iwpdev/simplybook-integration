@@ -7,7 +7,7 @@
 
 use Iwpdev\SimplybookIntegration\Helpers\DBHelpers;
 
-$title              = $atts['title'] ?? '';
+$service_title      = $atts['title'] ?? '';
 $sub_title          = $atts['sub_title'] ?? '';
 $service_categories = DBHelpers::get_all_service_category();
 //phpcs:disable
@@ -17,7 +17,7 @@ $active = ! empty( $_GET['category_id'] ) ? (int) $_GET['category_id'] : (int) $
 $services = apply_filters( 'service_filters', DBHelpers::get_services_by_category( $active ) );
 ?>
 <div class="services-wrapper">
-	<h1><?php echo esc_html( $title ); ?></h1>
+	<h1><?php echo esc_html( $service_title ); ?></h1>
 	<hr class="sline">
 	<h2>
 		<?php echo wp_kses_post( $sub_title ); ?>

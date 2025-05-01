@@ -303,7 +303,6 @@ class DBHelpers {
 			return [];
 		}
 
-
 		return $results;
 	}
 

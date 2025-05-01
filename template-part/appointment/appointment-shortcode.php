@@ -5,7 +5,6 @@
  * @package iwpdev/simplybook-integration
  */
 
-
 use Iwpdev\SimplybookIntegration\Helpers\FrontEndHelpers;
 
 $locations = FrontEndHelpers::get_location_select_options_array();
