@@ -33,7 +33,6 @@ jQuery( document ).ready( function( $ ) {
 				dots: true,
 			} );
 		}
-		console.log( doctorsMenu.find( 'li > a' ) );
 
 		doctorsMenu.find( 'li > a' ).click( function( e ) {
 			e.preventDefault();
@@ -44,5 +43,25 @@ jQuery( document ).ready( function( $ ) {
 		} );
 	}
 
+	$( '.datepicker' ).datepicker( {
+		showButtonPanel: true,
+		changeMonth: true,
+		changeYear: false,
+		showAnim: 'fold',
+		prevText: '',
+		nextText: '',
+		gotoCurrent: true
+	} );
+
+	$( '.ui-datepicker-month' ).select2( {
+		minimumResultsForSearch: Infinity,
+		dropdownParent: '.ui-datepicker-title',
+	} );
+	
+	$( '.select select' ).select2( {
+		minimumResultsForSearch: Infinity,
+		dropdownParent: '.select',
+		width: '100%',
+	} );
 
 } );

@@ -5,7 +5,7 @@
  * @package iwpdev/simplybook-integration
  */
 
-namespace Iwpdev\SimplybookIntegration\DB;
+namespace Iwpdev\SimplybookIntegration\Helpers;
 
 use stdClass;
 
@@ -110,6 +110,7 @@ class DBHelpers {
 					'picture_preview'     => $service_data['picture_preview'],
 					'service_is_active'   => $service_data['is_active'],
 					'service_is_visible'  => $service_data['is_visible'],
+					'service_post_id'     => $service_data['service_post_id'],
 				],
 				[
 					'%d',
@@ -122,6 +123,7 @@ class DBHelpers {
 					'%s',
 					'%d',
 					'%d',
+					'%d',
 				]
 			);
 
@@ -130,7 +132,7 @@ class DBHelpers {
 			}
 		}
 
-		if ( ! empty( $service_category_isset ) ) {
+		if ( ! empty( $service_isset ) ) {
 			$response = $wpdb->update(
 				$table_name_services,
 				[
@@ -144,9 +146,10 @@ class DBHelpers {
 					'picture_preview'     => $service_data['picture_preview'],
 					'service_is_active'   => $service_data['is_active'],
 					'service_is_visible'  => $service_data['is_visible'],
+					'service_post_id'     => $service_data['service_post_id'],
 				],
 				[
-					'id' => $service_category_isset->id,
+					'id' => $service_isset->id,
 				],
 				[
 					'%d',
@@ -157,6 +160,7 @@ class DBHelpers {
 					'%d',
 					'%s',
 					'%s',
+					'%d',
 					'%d',
 					'%d',
 				],
@@ -299,6 +303,216 @@ class DBHelpers {
 			return [];
 		}
 
+
 		return $results;
+	}
+
+	/**
+	 * Set all location.
+	 *
+	 * @param array $location_data Location data.
+	 *
+	 * @return bool
+	 */
+	public static function set_all_location( $location_data ) {
+		global $wpdb;
+		$table_name_location = $wpdb->prefix . 'sbip_location';
+		//phpcs:disable
+		$providers_isset = $wpdb->get_row(
+			$wpdb->prepare( "SELECT * FROM $table_name_location WHERE sb_location_id = %d", $location_data['id'] )
+		);
+
+		if ( empty( $providers_isset ) ) {
+			$response = $wpdb->insert(
+				$table_name_location,
+				[
+					'sb_location_id'  => $location_data['id'],
+					'name'            => $location_data['name'],
+					'description'     => $location_data['description'],
+					'picture_preview' => $location_data['picture_preview'],
+					'address1'        => $location_data['address1'],
+					'address2'        => $location_data['address2'] ?? '',
+					'phone'           => $location_data['phone'] ?? '',
+					'city'            => $location_data['city'],
+					'zip'             => $location_data['zip'],
+					'is_visible'      => $location_data['is_visible'],
+					'lat'             => $location_data['lat'],
+					'lng'             => $location_data['lng'],
+					'full_address'    => $location_data['full_address'],
+				],
+				[
+					'%d',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%d',
+					'%s',
+					'%s',
+					'%s',
+
+				]
+			);
+
+			if ( ! $response ) {
+				return false;
+			}
+		}
+
+		if ( ! empty( $providers_isset ) ) {
+			$response = $wpdb->update(
+				$table_name_location,
+				[
+					'sb_location_id'  => $location_data['id'],
+					'name'            => $location_data['name'],
+					'description'     => $location_data['description'],
+					'picture_preview' => $location_data['picture_preview'],
+					'address1'        => $location_data['address1'],
+					'address2'        => $location_data['address2'] ?? '',
+					'phone'           => $location_data['phone'] ?? '',
+					'city'            => $location_data['city'],
+					'zip'             => $location_data['zip'],
+					'is_visible'      => $location_data['is_visible'],
+					'lat'             => $location_data['lat'],
+					'lng'             => $location_data['lng'],
+					'full_address'    => $location_data['full_address'],
+				],
+				[
+					'id' => $providers_isset->id,
+				],
+				[
+					'%d',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%s',
+					'%d',
+					'%s',
+					'%s',
+					'%s',
+				],
+				[
+					'%d',
+				]
+			);
+		}
+
+		//phpcs:enable
+		return true;
+	}
+
+	/**
+	 * Set provider location.
+	 *
+	 * @param int $location_id Location id.
+	 * @param int $provider_id Provider id.
+	 *
+	 * @return bool
+	 */
+	public static function set_provider_location( int $location_id, int $provider_id ) {
+		global $wpdb;
+		$table_name_location_provider = $wpdb->prefix . 'sbip_location_provider';
+		//phpcs:disable
+		$providers_isset = $wpdb->get_row(
+			$wpdb->prepare( "SELECT * FROM $table_name_location_provider WHERE location_id = %d AND provider_id = %d", $location_id, $provider_id )
+		);
+
+		if ( empty( $providers_isset ) ) {
+			$response = $wpdb->insert(
+				$table_name_location_provider,
+				[
+					'location_id' => $location_id,
+					'provider_id' => $provider_id,
+				],
+				[
+					'%d',
+					'%d',
+				]
+			);
+
+			if ( ! $response ) {
+				return false;
+			}
+		}
+
+		if ( ! empty( $providers_isset ) ) {
+			$response = $wpdb->update(
+				$table_name_location_provider,
+				[
+					'location_id' => $location_id,
+					'provider_id' => $provider_id,
+				],
+				[
+					'id' => $providers_isset->id,
+				],
+				[
+					'%d',
+					'%d',
+				],
+				[
+					'%d',
+				]
+			);
+
+			if ( ! $response ) {
+				return false;
+			}
+		}
+
+		//phpcs:enable
+		return true;
+	}
+
+	/**
+	 * Get location.
+	 *
+	 * @return array|object|stdClass[]
+	 */
+	public static function get_locations() {
+		global $wpdb;
+		$table_name_location_provider = $wpdb->prefix . 'sbip_location';
+
+		//phpcs:disable
+		$location = $wpdb->get_results( "SELECT * FROM $table_name_location_provider" );
+		//phpcs:enable
+
+		if ( empty( $location ) ) {
+			return [];
+		}
+
+		return $location;
+	}
+
+	/**
+	 * Get services by category.
+	 *
+	 * @param int $category_id Category id.
+	 *
+	 * @return array|object|stdClass[]
+	 */
+	public static function get_services_by_category( int $category_id ) {
+		global $wpdb;
+		$table_name_services_category = $wpdb->prefix . 'sbip_services_category';
+		$table_name_services          = $wpdb->prefix . 'sbip_services';
+
+		$sql = "SELECT s.* FROM $table_name_services AS s INNER JOIN $table_name_services_category AS p ON p.service_sb_id = s.service_sb_id WHERE p.category_sb_id = %d;";
+
+		//phpcs:disable
+		$result = $wpdb->get_results( $wpdb->prepare( $sql, $category_id ) );
+		//phpcs:enable
+
+		if ( empty( $result ) ) {
+			return [];
+		}
+
+		return $result;
 	}
 }

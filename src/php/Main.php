@@ -7,12 +7,17 @@
 
 namespace Iwpdev\SimplybookIntegration;
 
+use DOMDocument;
+use DOMXPath;
+use Iwpdev\SimplybookIntegration\Admin\CustomPostTypes\CreateServicePostType;
 use Iwpdev\SimplybookIntegration\Admin\Notification\Notification;
 use Iwpdev\SimplybookIntegration\Admin\Pages\OptionsPage;
 use Iwpdev\SimplybookIntegration\API\SimplyBookApi;
 use Iwpdev\SimplybookIntegration\DB\CreateTables;
+use Iwpdev\SimplybookIntegration\ShortCodes\SimplybookAppointment;
 use Iwpdev\SimplybookIntegration\ShortCodes\SimplybookBanner;
 use Iwpdev\SimplybookIntegration\ShortCodes\SimplybookJobBanner;
+use Iwpdev\SimplybookIntegration\ShortCodes\SimplybookServices;
 use Iwpdev\SimplybookIntegration\ShortCodes\SimplybookStaff;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -21,26 +26,6 @@ use RecursiveIteratorIterator;
  * Main class file.
  */
 class Main {
-	/**
-	 * Allow tags for description.
-	 */
-	const ALLOW_TAGS_FOR_DESCRIPTION = [
-		'a'      => [
-			'href'  => [],
-			'title' => [],
-		],
-		'strong' => [],
-		'em'     => [],
-		'p'      => [],
-		'img'    => [
-			'src'   => [],
-			'title' => [],
-			'alt'   => [],
-		],
-		'b'      => [],
-		'li'     => [],
-		'ul'     => [],
-	];
 
 	/**
 	 * Main construct.
@@ -66,11 +51,17 @@ class Main {
 		add_filter( 'cron_schedules', [ $this, 'cron_add_half_hour' ] );
 		//phpcs:enable
 		add_filter( 'provider_filters', [ $this, 'handler_provider_filters' ], 10, 1 );
+		add_filter( 'service_filters', [ $this, 'handler_service_filters' ], 10, 1 );
+		add_filter( 'specialization_filters', [ $this, 'handler_specialization_filters' ], 10, 1 );
+		add_filter( 'service_sub_description', [ $this, 'handler_service_sub_description_filter' ], 10, 1 );
 
 		new SimplybookBanner();
 		new SimplybookStaff();
 		new CreateTables();
 		new SimplybookJobBanner();
+		new SimplybookAppointment();
+		new SimplybookServices();
+		new CreateServicePostType();
 	}
 
 	/**
@@ -154,6 +145,7 @@ class Main {
 			$min = '';
 		}
 
+		wp_enqueue_script( 'sbip_datepicer', $url . '/assets/js/jquery-ui-datepicker' . $min . '.js', [ 'jquery' ], '1.14.1 ', true );
 		wp_enqueue_script( 'sbip_main', $url . '/assets/js/main' . $min . '.js', [ 'jquery' ], SBIP_PHP_REQUIRED_VERSION, true );
 
 		wp_enqueue_style( 'sbip_main', $url . '/assets/css/main' . $min . '.css', '', SBIP_PHP_REQUIRED_VERSION );
@@ -186,9 +178,38 @@ class Main {
 				'post_status'  => 'publish',
 				'post_author'  => 1,
 				'post_type'    => 'page',
+				'post_name'    => 'personal',
 			];
 
 			$post_id = wp_insert_post( $post_data );
+		}
+
+		$page_appointment = get_page_by_path( 'appointment', OBJECT, 'page' );
+		if ( ! $page_appointment ) {
+			$content   = '<!-- wp:shortcode -->[sbip_simplybook_appointment]<!-- /wp:shortcode -->';
+			$post_data = [
+				'post_title'   => sanitize_text_field( __( 'Запис на прийом', 'simplybook-integration' ) ),
+				'post_content' => $content,
+				'post_status'  => 'publish',
+				'post_author'  => 1,
+				'post_type'    => 'page',
+				'post_name'    => 'appointment',
+			];
+			$post_id   = wp_insert_post( $post_data );
+		}
+
+		$page_services = get_page_by_path( 'services', OBJECT, 'page' );
+		if ( ! $page_services ) {
+			$content   = '<!-- wp:shortcode -->[sbip_simplybook_services title="Послуги" sub_title="<strong>Краса починається з турботи.</strong> Ми знаємо, як зробити вас щасливішими <br> у своєму відображенні."]<!-- /wp:shortcode -->';
+			$post_data = [
+				'post_title'   => sanitize_text_field( __( 'Послуги', 'simplybook-integration' ) ),
+				'post_content' => $content,
+				'post_status'  => 'publish',
+				'post_author'  => 1,
+				'post_type'    => 'page',
+				'post_name'    => 'services',
+			];
+			$post_id   = wp_insert_post( $post_data );
 		}
 	}
 
@@ -279,5 +300,84 @@ class Main {
 		}
 
 		return $temp_providers;
+	}
+
+	/**
+	 * Service filter.
+	 *
+	 * @param array $services Services.
+	 *
+	 * @return array
+	 */
+	public function handler_service_filters( $services ) {
+		$merged = [];
+
+		foreach ( $services as $service ) {
+			$service_id = $service->service_sb_id;
+
+			// Если такой service_sb_id ещё не добавлен
+			if ( ! isset( $merged[ $service_id ] ) ) {
+				$new_service               = clone $service;
+				$new_service->providers_id = [ $service->provider_id_sb ];
+				$merged[ $service_id ]     = $new_service;
+			} else {
+				// Добавляем provider_id_sb, если его ещё нет
+				if ( ! in_array( $service->provider_id_sb, $merged[ $service_id ]->providers_id, true ) ) {
+					$merged[ $service_id ]->providers_id[] = $service->provider_id_sb;
+				}
+			}
+		}
+
+		// Возвращаем как обычный индексированный массив
+		return array_values( $merged );
+	}
+
+	/**
+	 * Specialization filters.
+	 *
+	 * @param string $description Description.
+	 *
+	 * @return string
+	 */
+	public function handler_specialization_filters( string $description ): string {
+		$dom = new DOMDocument();
+		libxml_use_internal_errors( true ); // подавить warning-и
+
+		$dom->loadHTML( mb_convert_encoding( $description, 'HTML-ENTITIES', 'UTF-8' ) );
+		$xpath = new DOMXPath( $dom );
+
+		$nodes = $xpath->query( '//h6[@class="specialization"]' );
+
+		$text = '';
+		if ( $nodes->length > 0 ) {
+			$text = trim( $nodes[0]->textContent );
+		}
+
+		return $text;
+	}
+
+	/**
+	 * Service sub description filter.
+	 *
+	 * @param string $description Description.
+	 *
+	 * @return string
+	 */
+	public function handler_service_sub_description_filter( string $description ): string {
+		$dom = new DOMDocument();
+		libxml_use_internal_errors( true ); // подавить warning-и
+
+		$dom->loadHTML( mb_convert_encoding( $description, 'HTML-ENTITIES', 'UTF-8' ) );
+		$xpath = new DOMXPath( $dom );
+
+		$nodes = $xpath->query( '//p[@class="headline"]' );
+
+		$text = '';
+		if ( $nodes->length > 0 ) {
+			$text = trim( $nodes[0]->textContent );
+		}
+
+		return $text;
+
 	}
 }

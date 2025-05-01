@@ -9,7 +9,7 @@ namespace Iwpdev\SimplybookIntegration\API;
 
 use Iwpdev\SimplybookIntegration\Admin\Notification\Notification;
 use Iwpdev\SimplybookIntegration\Admin\Pages\OptionsPage;
-use Iwpdev\SimplybookIntegration\DB\DBHelpers;
+use Iwpdev\SimplybookIntegration\Helpers\DBHelpers;
 
 /**
  * SimplyBookApi class file.
@@ -168,8 +168,21 @@ class SimplyBookApi extends SimplyBookApiAbstract {
 		if ( $response['success'] && ! empty( $response['body']['data'] ) ) {
 			$all_services = $response['body']['data'];
 			foreach ( $all_services as $service ) {
+				$post_isset = get_page_by_path( apply_filters( 'cyr_to_lat', sanitize_title( $service['name'] ), '-' ), OBJECT, 'services' );
+				if ( ! $post_isset ) {
+					$post_data = [
+						'post_type'    => 'services',
+						'post_status'  => 'publish',
+						'post_title'   => $service['name'],
+						'post_content' => wp_kses_post( $service['description'] ),
+						'post_name'    => apply_filters( 'cyr_to_lat', sanitize_title( $service['name'] ), '-' ),
+					];
+
+					$post_id = wp_insert_post( $post_data, true );
+				}
 				foreach ( $service['providers'] as $provider ) {
-					$service['provider'] = $provider;
+					$service['provider']        = $provider;
+					$service['service_post_id'] = ! empty( $post_id ) ? $post_id : $post_isset;
 					DBHelpers::set_service( $service );
 				}
 			}
@@ -205,6 +218,42 @@ class SimplyBookApi extends SimplyBookApiAbstract {
 			$all_providers = $response['body']['data'];
 			foreach ( $all_providers as $provider ) {
 				DBHelpers::set_provider( $provider );
+			}
+		}
+	}
+
+	/**
+	 * Get all location.
+	 *
+	 * @return void
+	 */
+	public function get_all_location(): void {
+		$auth_header   = $this->get_aut_headers();
+		$all_providers = [];
+
+		if ( empty( $auth_header ) ) {
+			$date_token = $this->get_refresh_token_data();
+			if ( ! empty( $date_token['body'] ) ) {
+				set_transient( OptionsPage::FIELD_PREFIX . 'token', $date_token['body']['token'], HOUR_IN_SECONDS / 2 );
+				update_option( OptionsPage::FIELD_PREFIX . 'refresh_token', $date_token['body']['refresh_token'], true );
+			}
+		}
+
+		$auth_header = $this->get_aut_headers();
+
+		$response = $this->send_get_query(
+			'/admin/locations',
+			[],
+			$auth_header
+		);
+
+		if ( $response['success'] && ! empty( $response['body']['data'] ) ) {
+			$all_location = $response['body']['data'];
+			foreach ( $all_location as $location ) {
+				DBHelpers::set_all_location( $location );
+				foreach ( $location['providers'] as $provider ) {
+					DBHelpers::set_provider_location( $location['id'], $provider );
+				}
 			}
 		}
 	}

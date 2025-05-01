@@ -39,6 +39,8 @@ class CreateTables {
 		$table_name_services          = $wpdb->prefix . 'sbip_services';
 		$table_name_providers         = $wpdb->prefix . 'sbip_providers';
 		$table_name_services_category = $wpdb->prefix . 'sbip_services_category';
+		$table_name_location          = $wpdb->prefix . 'sbip_location';
+		$table_name_location_provider = $wpdb->prefix . 'sbip_location_provider';
 
 		//phpcs:disable
 		$service_table_created = get_option( OptionsPage::FIELD_PREFIX . 'services_created', false );
@@ -53,9 +55,10 @@ class CreateTables {
 					  `picture` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NULL,
 					  `picture_preview` VARCHAR(255) CHARACTER SET 'utf8mb4' COLLATE 'utf8mb4_general_ci' NULL,
 					  `provider_id_sb` INT NOT NULL,
+					  `service_post_id`  BIGINT(255) NOT NULL,
 					  `service_is_active` TINYINT NULL DEFAULT 0,
 					  `service_is_visible` TINYINT NULL,
-					  PRIMARY KEY (`id`, `id_sb`, `service_sb_id`));";
+					  PRIMARY KEY (`id`, `provider_id_sb`, `service_sb_id`, `service_post_id`));";
 			$result = $wpdb->query( $sql );
 			if ( $result ) {
 				update_option( OptionsPage::FIELD_PREFIX . 'services_created', true );
@@ -99,6 +102,49 @@ class CreateTables {
 				update_option( OptionsPage::FIELD_PREFIX . 'services_category_created', true );
 			}
 		}
+
+		$location_table_created = get_option( OptionsPage::FIELD_PREFIX . 'location_created', false );
+
+		if ( empty( $location_table_created ) ) {
+			$sql = "CREATE TABLE IF NOT EXISTS $table_name_location (
+    				`id` INT NOT NULL AUTO_INCREMENT , 
+    				`sb_location_id` INT NOT NULL , 
+    				`name` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL , 
+    				`description` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL , 
+    				`picture_preview` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL , 
+    				`address1` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL , 
+    				`address2` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL , 
+    				`phone` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL , 
+    				`city` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL , 
+    				`zip` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL , 
+    				`is_visible` BOOLEAN NOT NULL DEFAULT FALSE , 
+    				`lat` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL , 
+    				`lng` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL , 
+    				`full_address` VARCHAR(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL , 
+    				PRIMARY KEY (`id`), UNIQUE (`sb_location_id`));";
+
+			$result = $wpdb->query( $sql );
+			if ( $result ) {
+				update_option( OptionsPage::FIELD_PREFIX . 'location_created', true );
+			}
+		}
+
+		$location_provider_table_created = get_option( OptionsPage::FIELD_PREFIX . 'location_provider_created', false );
+		if ( empty( $location_provider_table_created ) ) {
+			$sql = "CREATE TABLE $table_name_location_provider (
+    			`id` INT NOT NULL AUTO_INCREMENT , 
+    			`location_id` INT NOT NULL , 
+    			`provider_id` INT NOT NULL , 
+    			PRIMARY KEY (`id`));";
+
+			$result = $wpdb->query( $sql );
+
+			if ( $result ) {
+				update_option( OptionsPage::FIELD_PREFIX . 'location_provider_created', true );
+			}
+		}
+
+
 		//phpcs:enable
 	}
 }

@@ -5,13 +5,12 @@
  * @package iwpdev/simplybook-integration
  */
 
-use Iwpdev\SimplybookIntegration\DB\DBHelpers;
-use Iwpdev\SimplybookIntegration\Main;
+use Iwpdev\SimplybookIntegration\Helpers\DBHelpers;
 
 $service_categories = DBHelpers::get_all_service_category();
 $staff_title        = $atts['title'];
 //phpcs:disable
-$active = (int) $_GET['category_id'] ?? $service_categories[0]->service_sb_id;
+$active = (int) $_GET['category_id'] ?: $service_categories[0]->service_sb_id;
 //phpcs:enable
 ?>
 <div class="doctors-category">
@@ -39,19 +38,19 @@ $active = (int) $_GET['category_id'] ?? $service_categories[0]->service_sb_id;
 		if ( ! empty( $doctors ) ) {
 			foreach ( $doctors as $key => $doctor ) {
 				if ( $doctor->is_active ) {
+					$specialization = apply_filters( 'specialization_filters', $doctor->description );
 					?>
 					<div class="doctors-profile">
 						<div class="photo">
 							<img
 									src="<?php echo esc_url( 'https://coma.clinic/' . $doctor->picture_preview ); ?>"
 									alt="<?php echo esc_html( $doctor->name ); ?>">
-							<div class="tag">ТОП-ЛІКАР</div>
 						</div>
 						<div class="doctors-profile-description">
 							<h3><?php echo esc_html( $doctor->name ); ?></h3>
-							<h6 class="specialization">Спеціалізація: Лікар дерматолог, трихолог, косметолог.</h6>
+							<h6 class="specialization"><?php echo esc_html( $specialization ?? '' ); ?></h6>
 							<div class="hide">
-								<?php echo wp_kses( $doctor->description, Main::ALLOW_TAGS_FOR_DESCRIPTION ); ?>
+								<?php echo wp_kses_post( $doctor->description ); ?>
 							</div>
 							<a href="#" class="more">
 								<?php esc_attr_e( 'Читати детальніше', 'simplybook-integration' ); ?>
