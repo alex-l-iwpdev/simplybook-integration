@@ -338,7 +338,7 @@ class Main {
 	 */
 	public function handler_specialization_filters( string $description ): string {
 		$dom = new DOMDocument();
-		libxml_use_internal_errors( true ); // подавить warning-и
+		libxml_use_internal_errors( true );
 
 		$dom->loadHTML( mb_convert_encoding( $description, 'HTML-ENTITIES', 'UTF-8' ) );
 		$xpath = new DOMXPath( $dom );
