@@ -518,18 +518,18 @@ class DBHelpers {
 	/**
 	 * Get service by id.
 	 *
-	 * @param int $service_id
+	 * @param int $service_id Service id.
 	 *
 	 * @return array|object|stdClass[]
 	 */
 	public static function get_service_by_id( int $service_id ) {
 		global $wpdb;
 		$table_name_services = $wpdb->prefix . 'sbip_services';
-
+		//phpcs:disable
 		$sql = "SELECT * FROM $table_name_services WHERE service_sb_id = %d LIMIT 1";
 
 		$result = $wpdb->get_results( $wpdb->prepare( $sql, $service_id ) );
-
+		//phpcs:enable
 		if ( empty( $result ) ) {
 			return [];
 		}

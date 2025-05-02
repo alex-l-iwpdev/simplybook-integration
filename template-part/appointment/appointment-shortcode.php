@@ -9,12 +9,13 @@ use Iwpdev\SimplybookIntegration\Helpers\FrontEndHelpers;
 use Iwpdev\SimplybookIntegration\Main;
 
 $locations = FrontEndHelpers::get_location_select_options_array();
-
+//phpcs:disable
 $providers = ! empty( $_GET['providers'] ) ? explode( ',', $_GET['providers'] ) : false;
 $provider  = ! empty( $_GET['provider'] ) ? (int) $_GET['provider'] : false;
 $service   = ! empty( $_GET['service'] ) ? (int) $_GET['service'] : false;
 $services  = ! empty( $_GET['services'] ) ? explode( ',', $_GET['services'] ) : false;
 $location  = ! empty( $_GET['location'] ) ? (int) $_GET['location'] : $locations[0]['id'];
+//phpcs:enable
 ?>
 <form class="appointment">
 	<div class="left-block">
