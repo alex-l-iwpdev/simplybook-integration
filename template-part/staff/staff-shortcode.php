@@ -6,6 +6,7 @@
  */
 
 use Iwpdev\SimplybookIntegration\Helpers\DBHelpers;
+use Iwpdev\SimplybookIntegration\Main;
 
 $service_categories = DBHelpers::get_all_service_category();
 $staff_title        = $atts['title'];
@@ -43,7 +44,7 @@ $active = (int) $_GET['category_id'] ?: $service_categories[0]->service_sb_id;
 					<div class="doctors-profile">
 						<div class="photo">
 							<img
-									src="<?php echo esc_url( 'https://coma.clinic/' . $doctor->picture_preview ); ?>"
+									src="<?php echo esc_url( Main::SBIP_BASE_IMAGE_URL . $doctor->picture_preview ); ?>"
 									alt="<?php echo esc_html( $doctor->name ); ?>">
 						</div>
 						<div class="doctors-profile-description">

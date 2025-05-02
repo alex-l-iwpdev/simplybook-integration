@@ -514,4 +514,83 @@ class DBHelpers {
 
 		return $result;
 	}
+
+	/**
+	 * Get service by id.
+	 *
+	 * @param int $service_id
+	 *
+	 * @return array|object|stdClass[]
+	 */
+	public static function get_service_by_id( int $service_id ) {
+		global $wpdb;
+		$table_name_services = $wpdb->prefix . 'sbip_services';
+
+		$sql = "SELECT * FROM $table_name_services WHERE service_sb_id = %d LIMIT 1";
+
+		$result = $wpdb->get_results( $wpdb->prepare( $sql, $service_id ) );
+
+		if ( empty( $result ) ) {
+			return [];
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Get provider by ids.
+	 *
+	 * @param array $ids         Providers id.
+	 * @param int   $location_id Location id.
+	 *
+	 * @return array|object|stdClass[]
+	 */
+	public static function get_providers_by_ids( array $ids, int $location_id ) {
+		global $wpdb;
+		$table_name_providers         = $wpdb->prefix . 'sbip_providers';
+		$table_name_location_provider = $wpdb->prefix . 'sbip_location_provider';
+
+		$prepare_in = self::prepare_in( $ids );
+		//phpcs:disable
+		$sql = "SELECT p.* 
+				FROM $table_name_providers AS p
+				LEFT JOIN $table_name_location_provider AS lp ON lp.provider_id = p.id_sb
+				WHERE p.id_sb IN ($prepare_in) AND lp.location_id = %s;";
+
+		$result = $wpdb->get_results( $wpdb->prepare( $sql, $location_id ) );
+		//phpcs:enable
+		if ( empty( $result ) ) {
+			return [];
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Changes array of items into string of items, separated by comma and sql-escaped
+	 *
+	 * @see https://coderwall.com/p/zepnaw
+	 * @global wpdb       $wpdb
+	 *
+	 * @param mixed|array $items  item(s) to be joined into string.
+	 * @param string      $format %s or %d.
+	 *
+	 * @return string Items separated by comma and sql-escaped
+	 */
+	public static function prepare_in( $items, string $format = '%s' ): string {
+		global $wpdb;
+
+		$prepared_in = '';
+		$items       = (array) $items;
+		$how_many    = count( $items );
+
+		if ( $how_many > 0 ) {
+			$placeholders    = array_fill( 0, $how_many, $format );
+			$prepared_format = implode( ',', $placeholders );
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+			$prepared_in = $wpdb->prepare( $prepared_format, $items );
+		}
+
+		return $prepared_in;
+	}
 }

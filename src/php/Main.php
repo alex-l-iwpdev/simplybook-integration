@@ -28,6 +28,11 @@ use RecursiveIteratorIterator;
 class Main {
 
 	/**
+	 * Simply Book Base image url.
+	 */
+	const SBIP_BASE_IMAGE_URL = 'https://coma.clinic/';
+
+	/**
 	 * Main construct.
 	 */
 	public function __construct() {

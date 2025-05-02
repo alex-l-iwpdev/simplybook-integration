@@ -6,9 +6,15 @@
  */
 
 use Iwpdev\SimplybookIntegration\Helpers\FrontEndHelpers;
+use Iwpdev\SimplybookIntegration\Main;
 
 $locations = FrontEndHelpers::get_location_select_options_array();
 
+$providers = ! empty( $_GET['providers'] ) ? explode( ',', $_GET['providers'] ) : false;
+$provider  = ! empty( $_GET['provider'] ) ? (int) $_GET['provider'] : false;
+$service   = ! empty( $_GET['service'] ) ? (int) $_GET['service'] : false;
+$services  = ! empty( $_GET['services'] ) ? explode( ',', $_GET['services'] ) : false;
+$location  = ! empty( $_GET['location'] ) ? (int) $_GET['location'] : $locations[0]['id'];
 ?>
 <form class="appointment">
 	<div class="left-block">
@@ -22,46 +28,29 @@ $locations = FrontEndHelpers::get_location_select_options_array();
 				<?php } ?>
 			</select>
 		</div>
+		<?php
+		if ( ! empty( $providers ) ) {
+			Main::sbip_get_template_part(
+				'appointment/appointment-service',
+				[
+					'service' => $service,
+				]
+			);
+			Main::sbip_get_template_part(
+				'appointment/appointment-providers',
+				[
+					'providers'   => $providers,
+					'location_id' => $location['id'],
+				]
+			);
+		}
 
-		<div class="service">
-			<h3>Послуга</h3>
-			<label for="specialist-1" class="icon-check">
-				<img src="assets/img/curl.png" alt="">
-				<h5>Online CURL </h5>
-				<p class="icon-clock">30 хв</p>
-				<p class="icon-price">700 грн</p>
-			</label>
-		</div>
-		<h3>Фахівець</h3>
-		<div class="specialist-block">
-			<div class="specialist">
-				<input type="radio" id="specialist-1" name="specialist">
-				<label for="specialist-1" class="icon-plus">
-					<img src="assets/img/photo-1.png" alt="">
-					<h5>Юлія Дудій</h5>
-					<p class="icon-clock">30 хв</p>
-					<p class="icon-price">700 грн</p>
-				</label>
-			</div>
-			<div class="specialist">
-				<input type="radio" id="specialist-2" name="specialist">
-				<label for="specialist-2" class="icon-plus">
-					<img src="assets/img/photo-2.png" alt="">
-					<h5>Васильєва Тетяна</h5>
-					<p class="icon-clock">30 хв</p>
-					<p class="icon-price">700 грн</p>
-				</label>
-			</div>
-			<div class="specialist">
-				<input type="radio" id="specialist-3" name="specialist">
-				<label for="specialist-3" class="icon-plus">
-					<img src="assets/img/photo-3.png" alt="">
-					<h5>Юліана Власюк</h5>
-					<p class="icon-clock">30 хв</p>
-					<p class="icon-price">700 грн</p>
-				</label>
-			</div>
-		</div>
+		if ( empty( $providers ) ) {
+			Main::sbip_get_template_part( 'appointment/appointment-providers' );
+			Main::sbip_get_template_part( 'appointment/appointment-service' );
+		}
+		?>
+
 	</div>
 	<div class="right-block">
 		<h2>Ще трошки...</h2>
