@@ -9,6 +9,7 @@ namespace Iwpdev\SimplybookIntegration\API;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\ServerException;
 use Iwpdev\SimplybookIntegration\Admin\Pages\OptionsPage;
 
@@ -127,6 +128,16 @@ abstract class SimplyBookApiAbstract {
 		}
 	}
 
+	/**
+	 * Send delete request.
+	 *
+	 * @param string $url     Url.
+	 * @param string $data    Data.
+	 * @param array  $headers Headers.
+	 *
+	 * @return array
+	 * @throws GuzzleException
+	 */
 	public function send_delete_request( string $url, string $data = '', array $headers = [] ) {
 		if ( ! empty( $headers ) ) {
 			$request_data['headers'] = $headers;
@@ -135,7 +146,7 @@ abstract class SimplyBookApiAbstract {
 		if ( ! empty( $data ) ) {
 			$url .= $data;
 		}
-		
+
 		try {
 			$response = $this->client->request(
 				'DELETE',
