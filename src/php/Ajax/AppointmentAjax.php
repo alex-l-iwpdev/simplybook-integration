@@ -99,8 +99,8 @@ class AppointmentAjax {
 			);
 		}
 
-		$today     = date( 'Y-m-d' );
-		$end_month = date( 'Y-m-t' );
+		$today     = gmdate( 'Y-m-d' );
+		$end_month = gmdate( 'Y-m-t' );
 
 		$api_client = new SimplyBookApi();
 		$response   = $api_client->get_schedule(

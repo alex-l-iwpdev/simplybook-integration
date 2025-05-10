@@ -601,7 +601,7 @@ class DBHelpers {
 	/**
 	 * Get Simply books user.
 	 *
-	 * @param string $email
+	 * @param string $email Email.
 	 *
 	 * @return array|object|stdClass[]
 	 */
@@ -632,7 +632,7 @@ class DBHelpers {
 	public static function set_simply_book_user( array $data ): bool {
 		global $wpdb;
 		$table_name_clients = $wpdb->prefix . 'sbip_clients';
-
+		//phpcs:disable
 		$response = $wpdb->insert(
 			$table_name_clients,
 			[
@@ -648,7 +648,7 @@ class DBHelpers {
 				'%s',
 			]
 		);
-
+		//phpcs:enable
 		if ( ! $response ) {
 			return false;
 		}
@@ -659,7 +659,7 @@ class DBHelpers {
 	/**
 	 * Get location by provider.
 	 *
-	 * @param int $provider_id
+	 * @param int $provider_id Provider Id.
 	 *
 	 * @return mixed|object|stdClass
 	 */
@@ -675,14 +675,14 @@ class DBHelpers {
 
 		//phpcs:disable
 		$sql = "SELECT l.*
-				 FROM $table_name_location_provider lp
-				 JOIN $table_name_location l ON l.sb_location_id = lp.location_id
-				 WHERE lp.provider_id = %d
-				 ORDER BY lp.location_id ASC";
+				FROM $table_name_location_provider lp
+				JOIN $table_name_location l ON l.sb_location_id = lp.location_id
+				WHERE lp.provider_id = %d
+				ORDER BY lp.location_id ASC";
 
 		$result = $wpdb->get_results( $wpdb->prepare( $sql, $provider_id ) );
 		//phpcs:enable
-		
+
 		if ( empty( $result ) ) {
 			return (object) [];
 		}

@@ -21,13 +21,13 @@ $location_selected = ! empty( $_GET['location'] ) ? (int) $_GET['location'] : $l
 <form
 		class="appointment"
 		method="post"
-		action="<?php echo admin_url( 'admin-post.php' ); ?>">
+		action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 	<div class="left-block">
 		<h1><?php esc_attr_e( 'запис на прийом', 'simplybook-integration' ); ?></h1>
 		<div class="select icon-marker">
 			<select name="sbip_location" id="sbip-location">
 				<?php foreach ( $locations as $location ) { ?>
-					<option value="<?php echo esc_attr( $location['id'] ); ?>" <?php selected( $location_selected, $location['id'] ) ?>>
+					<option value="<?php echo esc_attr( $location['id'] ); ?>" <?php selected( $location_selected, $location['id'] ); ?>>
 						<?php echo esc_html( $location['name'] ); ?>
 					</option>
 				<?php } ?>

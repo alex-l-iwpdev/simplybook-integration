@@ -69,7 +69,7 @@ class SimplybookBoolingConfirm {
 							<p><?php echo esc_html( $location->full_address ?? '' ); ?></p>
 						</div>
 						<a
-								href="<?php echo esc_url( 'https://www.google.com/maps/?q=' . $location->lat . ',' . $location->lng ) ?>"
+								href="<?php echo esc_url( 'https://www.google.com/maps/?q=' . $location->lat . ',' . $location->lng ); ?>"
 								target="_blank"
 								rel="nofollow noindex"
 								class="icon-marker">

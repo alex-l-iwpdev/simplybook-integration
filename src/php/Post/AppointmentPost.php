@@ -51,6 +51,8 @@ class AppointmentPost {
 		}
 
 		/**
+		 * Todo Try it into one check through an array.
+		 *
 		 * @todo Try it into one check through an array.
 		 */
 
@@ -74,7 +76,7 @@ class AppointmentPost {
 			);
 		}
 
-		$specialist = ! empty( $_POST['specialist'] ) ? filter_var( $_POST['specialist'], FILTER_SANITIZE_NUMBER_INT ) : null;
+		$specialist = ! empty( $_POST['specialist'] ) ? filter_var( wp_unslash( $_POST['specialist'] ), FILTER_SANITIZE_NUMBER_INT ) : null;
 		if ( empty( $sbip_location ) ) {
 			wp_send_json_error(
 				[
@@ -179,7 +181,7 @@ class AppointmentPost {
 					'booking_id'     => $response[0]['id'],
 				];
 
-				$json = json_encode( $book_date );
+				$json = wp_json_encode( $book_date );
 
 				setcookie( 'booking_confirm', $json, time() + 3600, '/', COOKIE_DOMAIN, is_ssl(), true );
 				wp_safe_redirect( get_bloginfo( 'url' ) . '/booking-confirm', 301 );
@@ -187,7 +189,7 @@ class AppointmentPost {
 			}
 		}
 
-		setcookie( 'booking_confirm', json_encode( $response[0] ), time() + 3600, '/' );
+		setcookie( 'booking_confirm', wp_json_encode( $response[0] ), time() + 3600, '/' );
 		wp_safe_redirect( get_bloginfo( 'url' ) . '/booking-confirm', 301 );
 		exit;
 	}

@@ -241,7 +241,6 @@ class SimplyBookApi extends SimplyBookApiAbstract {
 			$auth_header = $this->get_aut_headers();
 		}
 
-
 		$response = $this->send_get_query(
 			'/admin/locations',
 			[],
@@ -278,7 +277,6 @@ class SimplyBookApi extends SimplyBookApiAbstract {
 			}
 			$auth_header = $this->get_aut_headers();
 		}
-
 
 		$response = $this->send_get_query(
 			'/admin/schedule',
@@ -352,7 +350,6 @@ class SimplyBookApi extends SimplyBookApiAbstract {
 			$auth_header
 		);
 
-
 		if ( $response['success'] && ! empty( $response['body'] ) ) {
 			return $response['body'];
 		}
@@ -362,10 +359,13 @@ class SimplyBookApi extends SimplyBookApiAbstract {
 
 	/**
 	 * Create new book.
+	 *
+	 * @param array $data Data array.
+	 *
+	 * @return array|mixed
 	 */
 	public function create_new_book( array $data ) {
-		$auth_header  = $this->get_aut_headers();
-		$all_schedule = [];
+		$auth_header = $this->get_aut_headers();
 
 		if ( empty( $auth_header ) ) {
 			$date_token = $this->get_refresh_token_data();
@@ -386,7 +386,10 @@ class SimplyBookApi extends SimplyBookApiAbstract {
 			return $response['body']['bookings'];
 		}
 
+		//phpcs:disable
 		error_log( print_r( $response['message'], true ) );
+
+		//phpcs:enable
 
 		return [
 			'success' => false,
