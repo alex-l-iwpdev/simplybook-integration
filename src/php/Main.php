@@ -12,10 +12,13 @@ use DOMXPath;
 use Iwpdev\SimplybookIntegration\Admin\CustomPostTypes\CreateServicePostType;
 use Iwpdev\SimplybookIntegration\Admin\Notification\Notification;
 use Iwpdev\SimplybookIntegration\Admin\Pages\OptionsPage;
+use Iwpdev\SimplybookIntegration\Ajax\AppointmentAjax;
 use Iwpdev\SimplybookIntegration\API\SimplyBookApi;
 use Iwpdev\SimplybookIntegration\DB\CreateTables;
+use Iwpdev\SimplybookIntegration\Post\AppointmentPost;
 use Iwpdev\SimplybookIntegration\ShortCodes\SimplybookAppointment;
 use Iwpdev\SimplybookIntegration\ShortCodes\SimplybookBanner;
+use Iwpdev\SimplybookIntegration\ShortCodes\SimplybookBoolingConfirm;
 use Iwpdev\SimplybookIntegration\ShortCodes\SimplybookJobBanner;
 use Iwpdev\SimplybookIntegration\ShortCodes\SimplybookServices;
 use Iwpdev\SimplybookIntegration\ShortCodes\SimplybookStaff;
@@ -66,7 +69,10 @@ class Main {
 		new SimplybookJobBanner();
 		new SimplybookAppointment();
 		new SimplybookServices();
+		new SimplybookBoolingConfirm();
 		new CreateServicePostType();
+		new AppointmentAjax();
+		new AppointmentPost();
 	}
 
 	/**
@@ -154,6 +160,21 @@ class Main {
 		wp_enqueue_script( 'sbip_main', $url . '/assets/js/main' . $min . '.js', [ 'jquery' ], SBIP_PHP_REQUIRED_VERSION, true );
 
 		wp_enqueue_style( 'sbip_main', $url . '/assets/css/main' . $min . '.css', '', SBIP_PHP_REQUIRED_VERSION );
+
+		wp_localize_script(
+			'sbip_main',
+			'sbipObject',
+			[
+				'ajaxUrl'             => admin_url( 'admin-ajax.php' ),
+				'appointmentNonce'    => wp_create_nonce( AppointmentAjax::APPOINTMENTS_ACTIONS_NAME ),
+				'appointmentAction'   => AppointmentAjax::APPOINTMENTS_ACTIONS_NAME,
+				'slotAction'          => AppointmentAjax::SLOTS_ACTIONS_NAME,
+				'slotNonce'           => wp_create_nonce( AppointmentAjax::SLOTS_ACTIONS_NAME ),
+				'deleteBookingAction' => AppointmentAjax::DELETE_BOOKING_ACTION,
+				'deleteBookingNonce'  => wp_create_nonce( AppointmentAjax::DELETE_BOOKING_ACTION ),
+				'mainPageUrl'         => get_bloginfo( 'url' ),
+			]
+		);
 	}
 
 	/**
@@ -213,6 +234,20 @@ class Main {
 				'post_author'  => 1,
 				'post_type'    => 'page',
 				'post_name'    => 'services',
+			];
+			$post_id   = wp_insert_post( $post_data );
+		}
+
+		$page_confirm_booking = get_page_by_path( 'booking-confirm', OBJECT, 'page' );
+		if ( ! $page_confirm_booking ) {
+			$content   = '<!-- wp:shortcode -->[sbip_simplybook_booking_confirm]<!-- /wp:shortcode -->';
+			$post_data = [
+				'post_title'   => sanitize_text_field( __( 'Бронювання', 'simplybook-integration' ) ),
+				'post_content' => $content,
+				'post_status'  => 'publish',
+				'post_author'  => 1,
+				'post_type'    => 'page',
+				'post_name'    => 'booking-confirm',
 			];
 			$post_id   = wp_insert_post( $post_data );
 		}

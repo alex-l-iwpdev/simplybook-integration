@@ -7,23 +7,27 @@
 
 use Iwpdev\SimplybookIntegration\Helpers\FrontEndHelpers;
 use Iwpdev\SimplybookIntegration\Main;
+use Iwpdev\SimplybookIntegration\Post\AppointmentPost;
 
 $locations = FrontEndHelpers::get_location_select_options_array();
 //phpcs:disable
-$providers = ! empty( $_GET['providers'] ) ? explode( ',', $_GET['providers'] ) : false;
-$provider  = ! empty( $_GET['provider'] ) ? (int) $_GET['provider'] : false;
-$service   = ! empty( $_GET['service'] ) ? (int) $_GET['service'] : false;
-$services  = ! empty( $_GET['services'] ) ? explode( ',', $_GET['services'] ) : false;
-$location  = ! empty( $_GET['location'] ) ? (int) $_GET['location'] : $locations[0]['id'];
+$providers         = ! empty( $_GET['providers'] ) ? explode( ',', $_GET['providers'] ) : false;
+$provider          = ! empty( $_GET['provider'] ) ? (int) $_GET['provider'] : false;
+$service           = ! empty( $_GET['service'] ) ? (int) $_GET['service'] : false;
+$services          = ! empty( $_GET['services'] ) ? explode( ',', $_GET['services'] ) : false;
+$location_selected = ! empty( $_GET['location'] ) ? (int) $_GET['location'] : $locations[0]['id'];
 //phpcs:enable
 ?>
-<form class="appointment">
+<form
+		class="appointment"
+		method="post"
+		action="<?php echo admin_url( 'admin-post.php' ); ?>">
 	<div class="left-block">
 		<h1><?php esc_attr_e( 'запис на прийом', 'simplybook-integration' ); ?></h1>
 		<div class="select icon-marker">
 			<select name="sbip_location" id="sbip-location">
 				<?php foreach ( $locations as $location ) { ?>
-					<option value="<?php echo esc_attr( $location['id'] ); ?>">
+					<option value="<?php echo esc_attr( $location['id'] ); ?>" <?php selected( $location_selected, $location['id'] ) ?>>
 						<?php echo esc_html( $location['name'] ); ?>
 					</option>
 				<?php } ?>
@@ -41,7 +45,7 @@ $location  = ! empty( $_GET['location'] ) ? (int) $_GET['location'] : $locations
 				'appointment/appointment-providers',
 				[
 					'providers'   => $providers,
-					'location_id' => $location['id'],
+					'location_id' => $location_selected,
 				]
 			);
 		}
@@ -54,50 +58,63 @@ $location  = ! empty( $_GET['location'] ) ? (int) $_GET['location'] : $locations
 
 	</div>
 	<div class="right-block">
-		<h2>Ще трошки...</h2>
+		<h2><?php esc_attr_e( 'Ще трошки...', 'simplybook-integration' ); ?></h2>
 		<div class="datepicker-block">
-			<h3>Дата</h3>
+			<div class="pswp__preloader__icn" style="display: none;">
+				<div class="pswp__preloader__cut">
+					<div class="pswp__preloader__donut"></div>
+				</div>
+			</div>
+			<h3><?php esc_html_e( 'Дата', 'simplybook-integration' ); ?></h3>
 			<div class="datepicker"></div>
 		</div>
 		<div class="clock-block">
-			<h3>Час</h3>
+			<h3><?php esc_html_e( 'Час', 'simplybook-integration' ); ?></h3>
 			<div class="clocks-radio">
-				<div class="clock-radio">
-					<input id="clock-1" type="radio" name="clock">
-					<label for="clock-1">09:00</label>
+				<div class="pswp__preloader__icn" style="display: none;">
+					<div class="pswp__preloader__cut">
+						<div class="pswp__preloader__donut"></div>
+					</div>
 				</div>
-				<div class="clock-radio">
-					<input id="clock-2" type="radio" name="clock">
-					<label for="clock-2">10:00</label>
-				</div>
-				<div class="clock-radio">
-					<input id="clock-3" type="radio" name="clock">
-					<label for="clock-3">11:00</label>
-				</div>
-				<div class="clock-radio">
-					<input id="clock-4" type="radio" name="clock">
-					<label for="clock-4">12:00</label>
-				</div>
-				<div class="clock-radio">
-					<input id="clock-5" type="radio" name="clock">
-					<label for="clock-5">15:00</label>
-				</div>
-				<div class="clock-radio">
-					<input id="clock-6" type="radio" name="clock">
-					<label for="clock-6">17:30</label>
-				</div>
-				<div class="clock-radio">
-					<input id="clock-7" type="radio" name="clock">
-					<label for="clock-7">19:00</label>
-				</div>
-				<div class="clock-radio">
-					<input id="clock-8" type="radio" name="clock">
-					<label for="clock-8">22:00</label>
-				</div>
+
 			</div>
 		</div>
-		<h3 class="price">Всього:<span>700 грн</span></h3>
-		<p>Онлайн консультація трихолога, <br> Юлія Дудій, 10:00</p>
-		<input type="submit" class="button" value="Записатись на прийом">
+		<h3 class="price"><?php esc_html_e( 'Всього:', 'simplybook-integration' ); ?><span></span></h3>
+		<p class="provider"><br><span></span></p>
+		<div class="input">
+			<input
+					type="text"
+					name="name"
+					id="sbi-name"
+					value=""
+					placeholder="<?php esc_attr_e( 'ПІБ', 'simplybook-integration' ); ?>"
+					required>
+		</div>
+		<div class="input">
+			<input
+					type="email"
+					name="email"
+					id="sbi-email"
+					value=""
+					placeholder="<?php esc_attr_e( 'Електронна пошта', 'simplybook-integration' ); ?>"
+					required>
+		</div>
+		<div class="input">
+			<input
+					type="tel"
+					name="phone"
+					id="sbi-phone"
+					value=""
+					placeholder="<?php esc_attr_e( 'Телефон', 'simplybook-integration' ); ?>"
+					required>
+		</div>
+		<?php wp_nonce_field( AppointmentPost::APOINTMENT_POST_ACTION, AppointmentPost::APOINTMENT_POST_ACTION ); ?>
+		<input type="hidden" name="action" value="<?php echo esc_attr( AppointmentPost::APOINTMENT_POST_ACTION ); ?>">
+		<input type="hidden" name="date_and_time" value="">
+		<input
+				type="submit"
+				class="button"
+				disabled
+				value="<?php esc_attr_e( 'Записатись на прийом', 'simplybook-integration' ); ?>">
 	</div>
 </form>

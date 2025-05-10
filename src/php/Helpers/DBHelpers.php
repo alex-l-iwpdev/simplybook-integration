@@ -523,6 +523,10 @@ class DBHelpers {
 	 * @return array|object|stdClass[]
 	 */
 	public static function get_service_by_id( int $service_id ) {
+		if ( empty( $service_id ) ) {
+			return [];
+		}
+
 		global $wpdb;
 		$table_name_services = $wpdb->prefix . 'sbip_services';
 		//phpcs:disable
@@ -592,5 +596,98 @@ class DBHelpers {
 		}
 
 		return $prepared_in;
+	}
+
+	/**
+	 * Get Simply books user.
+	 *
+	 * @param string $email
+	 *
+	 * @return array|object|stdClass[]
+	 */
+	public static function get_simply_book_user( string $email ) {
+		global $wpdb;
+		$table_name_clients = $wpdb->prefix . 'sbip_clients';
+
+		//phpcs:disable
+		$sql = "SELECT * FROM $table_name_clients WHERE client_email = %s";
+
+		$result = $wpdb->get_results( $wpdb->prepare( $sql, $email ) );
+		//phpcs:enable
+
+		if ( empty( $result ) ) {
+			return [];
+		}
+
+		return (array) $result[0];
+	}
+
+	/**
+	 * Set Simply Book user.
+	 *
+	 * @param array $data Data.
+	 *
+	 * @return bool
+	 */
+	public static function set_simply_book_user( array $data ): bool {
+		global $wpdb;
+		$table_name_clients = $wpdb->prefix . 'sbip_clients';
+
+		$response = $wpdb->insert(
+			$table_name_clients,
+			[
+				'client_id'    => $data['id'],
+				'client_name'  => $data['name'],
+				'client_phone' => $data['phone'],
+				'client_email' => $data['email'],
+			],
+			[
+				'%d',
+				'%s',
+				'%s',
+				'%s',
+			]
+		);
+
+		if ( ! $response ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Get location by provider.
+	 *
+	 * @param int $provider_id
+	 *
+	 * @return mixed|object|stdClass
+	 */
+	public static function get_location_by_provider( int $provider_id ) {
+
+		if ( empty( $provider_id ) ) {
+			return (object) [];
+		}
+
+		global $wpdb;
+		$table_name_location          = $wpdb->prefix . 'sbip_location';
+		$table_name_location_provider = $wpdb->prefix . 'sbip_location_provider';
+
+		//phpcs:disable
+		$sql = "SELECT l.*
+				 FROM $table_name_location_provider lp
+				 JOIN $table_name_location l ON l.sb_location_id = lp.location_id
+				 WHERE lp.provider_id = %d
+				 ORDER BY lp.location_id ASC";
+
+		$result = $wpdb->get_results( $wpdb->prepare( $sql, $provider_id ) );
+		//phpcs:enable
+		
+		if ( empty( $result ) ) {
+			return (object) [];
+		}
+
+		return $result[0];
+
 	}
 }

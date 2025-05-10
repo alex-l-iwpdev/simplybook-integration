@@ -31,7 +31,7 @@ abstract class SimplyBookApiAbstract {
 		$this->client = new Client(
 			[
 				'base_uri' => SimplyBookApi::API_ENDPOINT,
-				'timeout'  => 2.0,
+				'timeout'  => 10,
 			]
 		);
 	}
@@ -77,7 +77,7 @@ abstract class SimplyBookApiAbstract {
 		} catch ( ClientException | ServerException $e ) {
 			return [
 				'success' => false,
-				'message' => $e->getResponse(),
+				'message' => $e->getMessage(),
 			];
 		}
 	}
@@ -102,6 +102,43 @@ abstract class SimplyBookApiAbstract {
 		try {
 			$response = $this->client->request(
 				'GET',
+				$url,
+				$request_data
+			);
+			$body     = $response->getBody();
+			if ( $response->getStatusCode() !== 200 ) {
+				return [
+					'success' => false,
+					'code'    => $response->getStatusCode(),
+					'message' => json_decode( $body->getContents(), true ),
+				];
+			}
+
+			return [
+				'success' => true,
+				'code'    => $response->getStatusCode(),
+				'body'    => json_decode( $body->getContents(), true ),
+			];
+		} catch ( ClientException | ServerException $e ) {
+			return [
+				'success' => false,
+				'message' => $e->getResponse(),
+			];
+		}
+	}
+
+	public function send_delete_request( string $url, string $data = '', array $headers = [] ) {
+		if ( ! empty( $headers ) ) {
+			$request_data['headers'] = $headers;
+		}
+
+		if ( ! empty( $data ) ) {
+			$url .= $data;
+		}
+		
+		try {
+			$response = $this->client->request(
+				'DELETE',
 				$url,
 				$request_data
 			);

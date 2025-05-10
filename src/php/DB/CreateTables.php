@@ -41,6 +41,7 @@ class CreateTables {
 		$table_name_services_category = $wpdb->prefix . 'sbip_services_category';
 		$table_name_location          = $wpdb->prefix . 'sbip_location';
 		$table_name_location_provider = $wpdb->prefix . 'sbip_location_provider';
+		$table_name_clients           = $wpdb->prefix . 'sbip_clients';
 
 		//phpcs:disable
 		$service_table_created = get_option( OptionsPage::FIELD_PREFIX . 'services_created', false );
@@ -131,7 +132,7 @@ class CreateTables {
 
 		$location_provider_table_created = get_option( OptionsPage::FIELD_PREFIX . 'location_provider_created', false );
 		if ( empty( $location_provider_table_created ) ) {
-			$sql = "CREATE TABLE $table_name_location_provider (
+			$sql = "CREATE TABLE IF NOT EXISTS $table_name_location_provider (
     			`id` INT NOT NULL AUTO_INCREMENT , 
     			`location_id` INT NOT NULL , 
     			`provider_id` INT NOT NULL , 
@@ -144,7 +145,22 @@ class CreateTables {
 			}
 		}
 
+		$clients_table_created = get_option( OptionsPage::FIELD_PREFIX . 'clients_created', false );
+		if ( empty( $clients_table_created ) ) {
+			$sql = "CREATE TABLE $table_name_clients (
+					`id` BIGINT NOT NULL AUTO_INCREMENT , 
+					`client_id` BIGINT NOT NULL , 
+					`client_name` VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL , 
+					`client_phone` VARCHAR(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL , 
+					`client_email` VARCHAR(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL ,
+					 PRIMARY KEY (`id`));";
 
+			$result = $wpdb->query( $sql );
+
+			if ( $result ) {
+				update_option( OptionsPage::FIELD_PREFIX . 'clients_created', true );
+			}
+		}
 		//phpcs:enable
 	}
 }

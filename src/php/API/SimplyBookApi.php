@@ -237,9 +237,10 @@ class SimplyBookApi extends SimplyBookApiAbstract {
 				set_transient( OptionsPage::FIELD_PREFIX . 'token', $date_token['body']['token'], HOUR_IN_SECONDS / 2 );
 				update_option( OptionsPage::FIELD_PREFIX . 'refresh_token', $date_token['body']['refresh_token'], true );
 			}
+
+			$auth_header = $this->get_aut_headers();
 		}
 
-		$auth_header = $this->get_aut_headers();
 
 		$response = $this->send_get_query(
 			'/admin/locations',
@@ -256,5 +257,178 @@ class SimplyBookApi extends SimplyBookApiAbstract {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Get schedules.
+	 *
+	 * @param array $data Data.
+	 *
+	 * @return array
+	 */
+	public function get_schedule( array $data ): array {
+		$auth_header  = $this->get_aut_headers();
+		$all_schedule = [];
+
+		if ( empty( $auth_header ) ) {
+			$date_token = $this->get_refresh_token_data();
+			if ( ! empty( $date_token['body'] ) ) {
+				set_transient( OptionsPage::FIELD_PREFIX . 'token', $date_token['body']['token'], HOUR_IN_SECONDS / 2 );
+				update_option( OptionsPage::FIELD_PREFIX . 'refresh_token', $date_token['body']['refresh_token'], true );
+			}
+			$auth_header = $this->get_aut_headers();
+		}
+
+
+		$response = $this->send_get_query(
+			'/admin/schedule',
+			$data,
+			$auth_header
+		);
+
+		if ( $response['success'] && ! empty( $response['body'] ) ) {
+			return $response['body'];
+		}
+
+		return [];
+	}
+
+	/**
+	 * Get slot.
+	 *
+	 * @param array $data Data.
+	 *
+	 * @return array
+	 */
+	public function get_slot( array $data ): array {
+		$auth_header  = $this->get_aut_headers();
+		$all_schedule = [];
+
+		if ( empty( $auth_header ) ) {
+			$date_token = $this->get_refresh_token_data();
+			if ( ! empty( $date_token['body'] ) ) {
+				set_transient( OptionsPage::FIELD_PREFIX . 'token', $date_token['body']['token'], HOUR_IN_SECONDS / 2 );
+				update_option( OptionsPage::FIELD_PREFIX . 'refresh_token', $date_token['body']['refresh_token'], true );
+			}
+			$auth_header = $this->get_aut_headers();
+		}
+
+		$response = $this->send_get_query(
+			'/admin/schedule/available-slots',
+			$data,
+			$auth_header
+		);
+
+		if ( $response['success'] && ! empty( $response['body'] ) ) {
+			return $response['body'];
+		}
+
+		return [];
+	}
+
+	/**
+	 * Create client.
+	 *
+	 * @param array $data Data.
+	 *
+	 * @return array|mixed
+	 */
+	public function create_client( array $data ) {
+		$auth_header  = $this->get_aut_headers();
+		$all_schedule = [];
+
+		if ( empty( $auth_header ) ) {
+			$date_token = $this->get_refresh_token_data();
+			if ( ! empty( $date_token['body'] ) ) {
+				set_transient( OptionsPage::FIELD_PREFIX . 'token', $date_token['body']['token'], HOUR_IN_SECONDS / 2 );
+				update_option( OptionsPage::FIELD_PREFIX . 'refresh_token', $date_token['body']['refresh_token'], true );
+			}
+			$auth_header = $this->get_aut_headers();
+		}
+
+		$response = $this->send_post_query(
+			'/admin/clients',
+			$data,
+			$auth_header
+		);
+
+
+		if ( $response['success'] && ! empty( $response['body'] ) ) {
+			return $response['body'];
+		}
+
+		return [];
+	}
+
+	/**
+	 * Create new book.
+	 */
+	public function create_new_book( array $data ) {
+		$auth_header  = $this->get_aut_headers();
+		$all_schedule = [];
+
+		if ( empty( $auth_header ) ) {
+			$date_token = $this->get_refresh_token_data();
+			if ( ! empty( $date_token['body'] ) ) {
+				set_transient( OptionsPage::FIELD_PREFIX . 'token', $date_token['body']['token'], HOUR_IN_SECONDS / 2 );
+				update_option( OptionsPage::FIELD_PREFIX . 'refresh_token', $date_token['body']['refresh_token'], true );
+			}
+			$auth_header = $this->get_aut_headers();
+		}
+
+		$response = $this->send_post_query(
+			'/admin/bookings',
+			$data,
+			$auth_header
+		);
+
+		if ( $response['success'] && ! empty( $response['body']['bookings'] ) ) {
+			return $response['body']['bookings'];
+		}
+
+		error_log( print_r( $response['message'], true ) );
+
+		return [
+			'success' => false,
+			'message' => $response['message'],
+		];
+	}
+
+	/**
+	 * Delete Booking.
+	 *
+	 * @param int $booking_id booking id.
+	 *
+	 * @return array|void
+	 */
+	public function delete_booking( int $booking_id ) {
+		$auth_header = $this->get_aut_headers();
+
+		if ( empty( $auth_header ) ) {
+			$date_token = $this->get_refresh_token_data();
+			if ( ! empty( $date_token['body'] ) ) {
+				set_transient( OptionsPage::FIELD_PREFIX . 'token', $date_token['body']['token'], HOUR_IN_SECONDS / 2 );
+				update_option( OptionsPage::FIELD_PREFIX . 'refresh_token', $date_token['body']['refresh_token'], true );
+			}
+			$auth_header = $this->get_aut_headers();
+		}
+
+		$response = $this->send_delete_request(
+			'/admin/bookings/',
+			$booking_id,
+			$auth_header
+		);
+
+		if ( ! empty( $response['body']['status'] ) ) {
+			return [
+				'success' => true,
+				'message' => $response['status'],
+			];
+		}
+
+		return [
+			'success'  => false,
+			'response' => $response,
+		];
 	}
 }

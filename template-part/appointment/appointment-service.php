@@ -18,7 +18,7 @@ $service = DBHelpers::get_service_by_id( $service_id );
 	if ( ! empty( $service ) ) {
 		foreach ( $service as $item ) {
 			?>
-			<label for="service" class="icon-check">
+			<label for="service" class="icon-check" data-service_id="<?php echo esc_attr( $item->service_sb_id ); ?>">
 				<img
 						src="<?php echo esc_url( Main::SBIP_BASE_IMAGE_URL . $item->picture_preview ); ?>"
 						alt="<?php echo esc_html( $item->service_name ?? '' ); ?>">
@@ -26,6 +26,7 @@ $service = DBHelpers::get_service_by_id( $service_id );
 				<p class="icon-clock"><?php echo esc_html( $item->service_duration . __( ' хв', 'simplybook-integration' ) ); ?></p>
 				<p class="icon-price"><?php echo esc_html( $item->service_price . __( ' грн', 'simplybook-integration' ) ); ?></p>
 			</label>
+			<input type="hidden" name="service_id" value="<?php echo esc_attr( $item->service_sb_id ); ?>">
 			<?php
 		}
 	}
