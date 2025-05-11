@@ -9,6 +9,7 @@ namespace Iwpdev\SimplybookIntegration;
 
 use DOMDocument;
 use DOMXPath;
+use Iwpdev\SimplybookIntegration\Admin\Cron\SyncCron;
 use Iwpdev\SimplybookIntegration\Admin\CustomPostTypes\CreateServicePostType;
 use Iwpdev\SimplybookIntegration\Admin\Notification\Notification;
 use Iwpdev\SimplybookIntegration\Admin\Pages\OptionsPage;
@@ -74,6 +75,7 @@ class Main {
 		new CreateServicePostType();
 		new AppointmentAjax();
 		new AppointmentPost();
+		new SyncCron();
 	}
 
 	/**
