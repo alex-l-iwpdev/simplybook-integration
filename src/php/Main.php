@@ -433,7 +433,7 @@ class Main {
 
 		wp_enqueue_script( 'sbip_admin', $url . '/assets/js/admin' . $min . '.js', [ 'jquery' ], SBIP_PHP_REQUIRED_VERSION, true );
 
-		wp_enqueue_style( 'sbip_admin', $url . '/assets/css/admin' . $min . '.css' );
+		wp_enqueue_style( 'sbip_admin', $url . '/assets/css/admin' . $min . '.css', '', SBIP_PHP_REQUIRED_VERSION );
 
 		wp_localize_script(
 			'sbip_admin',

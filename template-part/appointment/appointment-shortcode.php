@@ -68,7 +68,6 @@ $location_selected = ! empty( $_GET['location'] ) ? (int) $_GET['location'] : $l
 			);
 		}
 		?>
-
 	</div>
 	<div class="right-block">
 		<h2><?php esc_attr_e( 'Ще трошки...', 'simplybook-integration' ); ?></h2>
