@@ -19,6 +19,9 @@ class SyncCron {
 	 */
 	const CRON_HOOK = 'sbip_sync_cron_weekly_event';
 
+	/**
+	 * SyncCron construct.
+	 */
 	public function __construct() {
 		$this->init();
 	}
