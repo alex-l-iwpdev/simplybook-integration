@@ -68,7 +68,8 @@ $active = ! empty( $_GET['category_id'] ) ? (int) $_GET['category_id'] : $servic
 											]
 										)
 									);
-									?>"
+									?>
+									"
 									class="button">
 								<?php esc_attr_e( 'записатись на прийом', 'simplybook-integration' ); ?>
 							</a>
