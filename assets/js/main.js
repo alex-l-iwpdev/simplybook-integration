@@ -75,23 +75,28 @@ jQuery( document ).ready( function( $ ) {
 		} );
 	}
 
-	const specialistElements = $( '[name=specialist]' );
+	const specialistElements = $( '[name=specialist], [name=service_id]' );
 	if ( specialistElements.length ) {
-		$( '.provider' ).html( $( '.service .icon-check h5' ).text() );
-		$( '.price span' ).text( $( '.service .icon-check .icon-price' ).text() );
 		const preloader = $( '.datepicker-block .pswp__preloader__icn' );
 		specialistElements.change( function( e ) {
+
+			$( this ).next( 'label' ).removeClass( 'icon-plus' ).addClass( 'icon-check' );
+
 			let data = {
 				action: sbipObject.appointmentAction,
 				nonce: sbipObject.appointmentNonce,
 				location: $( '#sbip-location option:selected' ).val(),
-				service: $( '.service .icon-check' ).data( 'service_id' ),
-				provider: $( this ).val()
+				service: $( '.service [name=service_id]:checked' ).val(),
+				provider: $( '[name=specialist]:checked' ).val()
 			};
 
-			let providerName = $( this ).parent().find( 'h5' ).text() + '<br>';
+			$( '.provider' ).html( $( '.service .icon-check h5' ).text() );
+			$( '.price span' ).text( $( '.service .icon-check .icon-price' ).text() );
+
+			let providerName = $( '[name=specialist]:checked' ).parent().find( 'h5' ).text() + '<br>';
+			$( 'p.provider' ).text( '' );
 			let text = $( '.provider' ).text() + '<br>' + providerName;
-			$( '.provider' ).html( text );
+			$( 'p.provider' ).html( text );
 
 			$.ajax( {
 				type: 'POST',

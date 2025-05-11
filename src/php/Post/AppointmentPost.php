@@ -42,12 +42,15 @@ class AppointmentPost {
 	public function appointment_post_handler(): void {
 		$nonce = ! empty( $_POST[ self::APOINTMENT_POST_ACTION ] ) ? filter_var( wp_unslash( $_POST[ self::APOINTMENT_POST_ACTION ] ), FILTER_SANITIZE_FULL_SPECIAL_CHARS ) : null;
 		if ( ! wp_verify_nonce( $nonce, self::APOINTMENT_POST_ACTION ) ) {
-			wp_send_json_error(
+			$json = wp_json_encode(
 				[
 					'success' => false,
-					'message' => __( 'Invalid security nonce.', 'simplybook-integration' ),
+					'message' => __( 'Недійсна безпека Nonce.', 'simplybook-integration' ),
 				]
 			);
+			setcookie( 'booking_confirm', $json, time() + 3600, '/', COOKIE_DOMAIN, is_ssl(), true );
+			wp_safe_redirect( get_bloginfo( 'url' ) . '/booking-confirm', 301 );
+			exit;
 		}
 
 		/**
@@ -58,72 +61,93 @@ class AppointmentPost {
 
 		$sbip_location = ! empty( $_POST['sbip_location'] ) ? filter_var( wp_unslash( $_POST['sbip_location'] ), FILTER_SANITIZE_NUMBER_INT ) : null;
 		if ( empty( $sbip_location ) ) {
-			wp_send_json_error(
+			$json = wp_json_encode(
 				[
 					'success' => false,
-					'message' => __( 'Invalid location.', 'simplybook-integration' ),
+					'message' => __( 'Недійсне розташування.', 'simplybook-integration' ),
 				]
 			);
+			setcookie( 'booking_confirm', $json, time() + 3600, '/', COOKIE_DOMAIN, is_ssl(), true );
+			wp_safe_redirect( get_bloginfo( 'url' ) . '/booking-confirm', 301 );
+			exit;
 		}
 
 		$service_id = ! empty( $_POST['service_id'] ) ? filter_var( wp_unslash( $_POST['service_id'] ), FILTER_SANITIZE_NUMBER_INT ) : null;
 		if ( empty( $sbip_location ) ) {
-			wp_send_json_error(
+			$json = wp_json_encode(
 				[
 					'success' => false,
-					'message' => __( 'Invalid Service.', 'simplybook-integration' ),
+					'message' => __( 'Недійсна послуга.', 'simplybook-integration' ),
 				]
 			);
+			setcookie( 'booking_confirm', $json, time() + 3600, '/', COOKIE_DOMAIN, is_ssl(), true );
+			wp_safe_redirect( get_bloginfo( 'url' ) . '/booking-confirm', 301 );
+			exit;
 		}
 
 		$specialist = ! empty( $_POST['specialist'] ) ? filter_var( wp_unslash( $_POST['specialist'] ), FILTER_SANITIZE_NUMBER_INT ) : null;
 		if ( empty( $sbip_location ) ) {
-			wp_send_json_error(
+			$json = wp_json_encode(
 				[
 					'success' => false,
-					'message' => __( 'Invalid Specialist.', 'simplybook-integration' ),
+					'message' => __( 'Недійсний фахівець.', 'simplybook-integration' ),
 				]
 			);
+			setcookie( 'booking_confirm', $json, time() + 3600, '/', COOKIE_DOMAIN, is_ssl(), true );
+			wp_safe_redirect( get_bloginfo( 'url' ) . '/booking-confirm', 301 );
+			exit;
 		}
 
 		$time = ! empty( $_POST['date_and_time'] ) ? filter_var( wp_unslash( $_POST['date_and_time'] ), FILTER_SANITIZE_FULL_SPECIAL_CHARS ) : null;
 		if ( empty( $time ) ) {
-			wp_send_json_error(
+			$json = wp_json_encode(
 				[
 					'success' => false,
-					'message' => __( 'Invalid Time.', 'simplybook-integration' ),
+					'message' => __( 'Недопустимое время.', 'simplybook-integration' ),
 				]
 			);
+			setcookie( 'booking_confirm', $json, time() + 3600, '/', COOKIE_DOMAIN, is_ssl(), true );
+			wp_safe_redirect( get_bloginfo( 'url' ) . '/booking-confirm', 301 );
+			exit;
 		}
 
 		$client_name = ! empty( $_POST['name'] ) ? filter_var( wp_unslash( $_POST['name'] ), FILTER_SANITIZE_FULL_SPECIAL_CHARS ) : null;
 		if ( empty( $client_name ) ) {
-			wp_send_json_error(
+			$json = wp_json_encode(
 				[
 					'success' => false,
-					'message' => __( 'Invalid Client Name.', 'simplybook-integration' ),
+					'message' => __( 'Недійсне ім\'я клієнта.', 'simplybook-integration' ),
 				]
 			);
+			setcookie( 'booking_confirm', $json, time() + 3600, '/', COOKIE_DOMAIN, is_ssl(), true );
+			wp_safe_redirect( get_bloginfo( 'url' ) . '/booking-confirm', 301 );
+			exit;
 		}
 
 		$email = ! empty( $_POST['email'] ) ? filter_var( wp_unslash( $_POST['email'] ), FILTER_SANITIZE_EMAIL ) : null;
 		if ( empty( $email ) ) {
-			wp_send_json_error(
+			$json = wp_json_encode(
 				[
 					'success' => false,
-					'message' => __( 'Invalid Email.', 'simplybook-integration' ),
+					'message' => __( 'Недійсний електронний лист.', 'simplybook-integration' ),
 				]
 			);
+			setcookie( 'booking_confirm', $json, time() + 3600, '/', COOKIE_DOMAIN, is_ssl(), true );
+			wp_safe_redirect( get_bloginfo( 'url' ) . '/booking-confirm', 301 );
+			exit;
 		}
 
 		$phone = ! empty( $_POST['phone'] ) ? filter_var( wp_unslash( $_POST['phone'] ), FILTER_SANITIZE_FULL_SPECIAL_CHARS ) : null;
 		if ( empty( $phone ) ) {
-			wp_send_json_error(
+			$json = wp_json_encode(
 				[
 					'success' => false,
-					'message' => __( 'Invalid phone.', 'simplybook-integration' ),
+					'message' => __( 'Недійсний телефон.', 'simplybook-integration' ),
 				]
 			);
+			setcookie( 'booking_confirm', $json, time() + 3600, '/', COOKIE_DOMAIN, is_ssl(), true );
+			wp_safe_redirect( get_bloginfo( 'url' ) . '/booking-confirm', 301 );
+			exit;
 		}
 
 		$is_user_isset = DBHelpers::get_simply_book_user( $email );
@@ -152,12 +176,15 @@ class AppointmentPost {
 		}
 
 		if ( empty( $user_data ) ) {
-			wp_send_json_error(
+			$json = wp_json_encode(
 				[
 					'success' => false,
-					'message' => __( 'User creation error.', 'simplybook-integration' ),
+					'message' => __( 'Помилка створення користувача.', 'simplybook-integration' ),
 				]
 			);
+			setcookie( 'booking_confirm', $json, time() + 3600, '/', COOKIE_DOMAIN, is_ssl(), true );
+			wp_safe_redirect( get_bloginfo( 'url' ) . '/booking-confirm', 301 );
+			exit;
 		}
 
 		if ( ! empty( $user_data ) ) {
@@ -189,7 +216,7 @@ class AppointmentPost {
 			}
 		}
 
-		setcookie( 'booking_confirm', wp_json_encode( $response[0] ), time() + 3600, '/' );
+		setcookie( 'booking_confirm', wp_json_encode( $response[0] ), time() + 3600, '/', COOKIE_DOMAIN, is_ssl(), true );
 		wp_safe_redirect( get_bloginfo( 'url' ) . '/booking-confirm', 301 );
 		exit;
 	}

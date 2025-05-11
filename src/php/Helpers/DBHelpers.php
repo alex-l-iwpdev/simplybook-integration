@@ -688,6 +688,32 @@ class DBHelpers {
 		}
 
 		return $result[0];
+	}
 
+	/**
+	 * Get services by provider id.
+	 *
+	 * @param int $provider_id Provider id.
+	 *
+	 * @return array|object|stdClass[]
+	 */
+	public static function get_services_by_provider( int $provider_id ) {
+		if ( empty( $provider_id ) ) {
+			return (object) [];
+		}
+
+		global $wpdb;
+		$table_name_providers = $wpdb->prefix . 'sbip_services';
+
+		//phpcs:disable
+		$sql    = "SELECT * FROM $table_name_providers WHERE `provider_id_sb` = %d ORDER BY `service_sb_id` ASC";
+		$result = $wpdb->get_results( $wpdb->prepare( $sql, $provider_id ) );
+		//phpcs:enable
+
+		if ( empty( $result ) ) {
+			return (object) [];
+		}
+
+		return $result;
 	}
 }

@@ -11,7 +11,7 @@ use Iwpdev\SimplybookIntegration\Main;
 $service_categories = DBHelpers::get_all_service_category();
 $staff_title        = $atts['title'];
 //phpcs:disable
-$active = (int) $_GET['category_id'] ?: $service_categories[0]->service_sb_id;
+$active = ! empty( $_GET['category_id'] ) ? (int) $_GET['category_id'] : $service_categories[0]->service_sb_id;
 //phpcs:enable
 ?>
 <div class="doctors-category">
@@ -21,7 +21,7 @@ $active = (int) $_GET['category_id'] ?: $service_categories[0]->service_sb_id;
 			<?php if ( ! empty( $service_categories ) ) { ?>
 				<ul class="doctors-category-menu">
 					<?php foreach ( $service_categories as $key => $service_category ) { ?>
-						<li class="<?php echo $service_category->service_sb_id === $active ? 'active' : ''; ?>">
+						<li class="<?php echo (int) $service_category->service_sb_id === $active ? 'active' : ''; ?>">
 							<a
 									href="#"
 									data-service_sb_id="<?php echo esc_attr( $service_category->service_sb_id ); ?>">
@@ -57,12 +57,10 @@ $active = (int) $_GET['category_id'] ?: $service_categories[0]->service_sb_id;
 								<?php esc_attr_e( 'Читати детальніше', 'simplybook-integration' ); ?>
 							</a>
 							<a
-									href="#"
-									class="button"
-									data-provider_ids="
+									href="
 									<?php
-									echo esc_attr(
-										implode(
+									echo esc_url(
+										get_bloginfo( 'url' ) . '/appointment/?provider=' . implode(
 											',',
 											[
 												$doctor->id_sb,
@@ -70,8 +68,8 @@ $active = (int) $_GET['category_id'] ?: $service_categories[0]->service_sb_id;
 											]
 										)
 									);
-									?>
-">
+									?>"
+									class="button">
 								<?php esc_attr_e( 'записатись на прийом', 'simplybook-integration' ); ?>
 							</a>
 						</div>
