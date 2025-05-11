@@ -53,6 +53,10 @@ class OptionsPage {
 	 * @return void
 	 */
 	public function create_options_page(): void {
+		$html = '<button class="synchronization button button-primary" >' . esc_html__( 'Start synchronization' ) . '</button>';
+
+		$html .= '<div class="pswp__preloader__icn" style="display: none;"><div class="pswp__preloader__cut"><div class="pswp__preloader__donut"></div></div></div>';
+
 		Container::make( 'theme_options', __( 'SimplyBook Options', 'simplybook-integration' ) )
 			->add_fields(
 				[
@@ -60,6 +64,9 @@ class OptionsPage {
 					Field::make( 'text', self::FIELD_PREFIX . 'login', __( 'Login', 'simplybook-integration' ) ),
 					Field::make( 'text', self::FIELD_PREFIX . 'password', __( 'Password', 'simplybook-integration' ) )
 						->set_attribute( 'type', 'password' ),
+					Field::make( 'html', 'crb_information_text' )
+						->set_html( $html ),
+
 				]
 			);
 	}

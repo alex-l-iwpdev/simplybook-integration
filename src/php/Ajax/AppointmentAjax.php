@@ -31,6 +31,11 @@ class AppointmentAjax {
 	const DELETE_BOOKING_ACTION = 'sbip_delete_booking';
 
 	/**
+	 * Action and nonce synchronization data form simplybook.
+	 */
+	const SYNC_SYMPLIBOOK_DATA_ACTION = 'sbip_sync_symplibook_data';
+
+	/**
 	 * AppointmentAjax construct.
 	 */
 	public function __construct() {
@@ -51,6 +56,9 @@ class AppointmentAjax {
 
 		add_action( 'wp_ajax_' . self::DELETE_BOOKING_ACTION, [ $this, 'delete_booking' ] );
 		add_action( 'wp_ajax_nopriv_' . self::DELETE_BOOKING_ACTION, [ $this, 'delete_booking' ] );
+
+		add_action( 'wp_ajax_' . self::SYNC_SYMPLIBOOK_DATA_ACTION, [ $this, 'ajax_sync_symplibook_data' ] );
+		add_action( 'wp_ajax_nopriv_' . self::SYNC_SYMPLIBOOK_DATA_ACTION, [ $this, 'ajax_sync_symplibook_data' ] );
 	}
 
 	/**
@@ -64,7 +72,7 @@ class AppointmentAjax {
 			wp_send_json_error(
 				[
 					'success' => false,
-					'message' => __( 'Invalid security nonce.', 'simplybook-integration' ),
+					'message' => __( 'Недійсна безпека.', 'simplybook-integration' ),
 				]
 			);
 		}
@@ -74,7 +82,7 @@ class AppointmentAjax {
 			wp_send_json_error(
 				[
 					'success' => false,
-					'message' => __( 'Invalid location.', 'simplybook-integration' ),
+					'message' => __( 'Недійсне розташування.', 'simplybook-integration' ),
 				]
 			);
 		}
@@ -84,7 +92,7 @@ class AppointmentAjax {
 			wp_send_json_error(
 				[
 					'success' => false,
-					'message' => __( 'Invalid service.', 'simplybook-integration' ),
+					'message' => __( 'Недійсна послуга.', 'simplybook-integration' ),
 				]
 			);
 		}
@@ -94,7 +102,7 @@ class AppointmentAjax {
 			wp_send_json_error(
 				[
 					'success' => false,
-					'message' => __( 'Invalid provider.', 'simplybook-integration' ),
+					'message' => __( 'Недійсний постачальник.', 'simplybook-integration' ),
 				]
 			);
 		}
@@ -116,7 +124,7 @@ class AppointmentAjax {
 			wp_send_json_error(
 				[
 					'success' => false,
-					'message' => __( 'Invalid schedule.', 'simplybook-integration' ),
+					'message' => __( 'Недійсний графік.', 'simplybook-integration' ),
 				]
 			);
 		}
@@ -131,7 +139,7 @@ class AppointmentAjax {
 		wp_send_json_success(
 			[
 				'success' => true,
-				'message' => __( 'Appointment scheduled.', 'simplybook-integration' ),
+				'message' => __( 'Заплановано на зустріч.', 'simplybook-integration' ),
 				'date'    => $day_off,
 			]
 		);
@@ -148,7 +156,7 @@ class AppointmentAjax {
 			wp_send_json_error(
 				[
 					'success' => false,
-					'message' => __( 'Invalid security nonce.', 'simplybook-integration' ),
+					'message' => __( 'Недійсна безпека Nonce.', 'simplybook-integration' ),
 				]
 			);
 		}
@@ -158,7 +166,7 @@ class AppointmentAjax {
 			wp_send_json_error(
 				[
 					'success' => false,
-					'message' => __( 'Invalid service.', 'simplybook-integration' ),
+					'message' => __( 'Недействительная служба.', 'simplybook-integration' ),
 				]
 			);
 		}
@@ -168,7 +176,7 @@ class AppointmentAjax {
 			wp_send_json_error(
 				[
 					'success' => false,
-					'message' => __( 'Invalid provider.', 'simplybook-integration' ),
+					'message' => __( 'Недійсний постачальник.', 'simplybook-integration' ),
 				]
 			);
 		}
@@ -178,7 +186,7 @@ class AppointmentAjax {
 			wp_send_json_error(
 				[
 					'success' => false,
-					'message' => __( 'Invalid date.', 'simplybook-integration' ),
+					'message' => __( 'Недійсна дата.', 'simplybook-integration' ),
 				]
 			);
 		}
@@ -235,7 +243,7 @@ class AppointmentAjax {
 			wp_send_json_error(
 				[
 					'success' => false,
-					'message' => __( 'Invalid security nonce.', 'simplybook-integration' ),
+					'message' => __( 'Недійсна безпека.', 'simplybook-integration' ),
 				]
 			);
 		}
@@ -245,7 +253,7 @@ class AppointmentAjax {
 			wp_send_json_error(
 				[
 					'success' => false,
-					'message' => __( 'Invalid booking.', 'simplybook-integration' ),
+					'message' => __( 'Недійсне бронювання.', 'simplybook-integration' ),
 				]
 			);
 		}
@@ -261,6 +269,37 @@ class AppointmentAjax {
 			[
 				'success' => false,
 				'message' => $response,
+			]
+		);
+	}
+
+	/**
+	 * Sync simplybook data ajax handler.
+	 *
+	 * @return void
+	 */
+	public function ajax_sync_symplibook_data(): void {
+		$nonce = ! empty( $_POST['nonce'] ) ? filter_var( wp_unslash( $_POST['nonce'] ), FILTER_SANITIZE_FULL_SPECIAL_CHARS ) : null;
+		if ( ! wp_verify_nonce( $nonce, self::SYNC_SYMPLIBOOK_DATA_ACTION ) ) {
+			wp_send_json_error(
+				[
+					'success' => false,
+					'message' => __( 'Недійсна безпека Nonce.', 'simplybook-integration' ),
+				]
+			);
+		}
+
+		$api_client = new SimplyBookApi();
+
+		$api_client->get_all_service_category();
+		$api_client->get_all_services();
+		$api_client->get_all_providers();
+		$api_client->get_all_location();
+
+		wp_send_json_success(
+			[
+				'success' => true,
+				'message' => esc_html__( 'Всі дані синхронізувалися', 'simplybook-integration' ),
 			]
 		);
 	}

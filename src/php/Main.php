@@ -55,6 +55,7 @@ class Main {
 		add_action( 'init', [ $this, 'create_default_pages' ] );
 		add_action( 'admin_head', [ $this, 'register_coron' ] );
 		add_action( OptionsPage::FIELD_PREFIX . 'refresh_token', [ $this, 'refresh_token_crone' ] );
+		add_action( 'admin_enqueue_scripts', [ $this, 'add_admin_scripts' ] );
 		//phpcs:disable
 		add_filter( 'cron_schedules', [ $this, 'cron_add_half_hour' ] );
 		//phpcs:enable
@@ -415,6 +416,33 @@ class Main {
 		}
 
 		return $text;
+	}
 
+	/**
+	 * Add script for admin page.
+	 *
+	 * @return void
+	 */
+	public function add_admin_scripts(): void {
+		$url = SBIP_URL;
+		$min = '.min';
+
+		if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+			$min = '';
+		}
+
+		wp_enqueue_script( 'sbip_admin', $url . '/assets/js/admin' . $min . '.js', [ 'jquery' ], SBIP_PHP_REQUIRED_VERSION, true );
+
+		wp_enqueue_style( 'sbip_admin', $url . '/assets/css/admin' . $min . '.css' );
+
+		wp_localize_script(
+			'sbip_admin',
+			'sbipObject',
+			[
+				'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
+				'syncNonce'  => wp_create_nonce( AppointmentAjax::SYNC_SYMPLIBOOK_DATA_ACTION ),
+				'syncAction' => AppointmentAjax::SYNC_SYMPLIBOOK_DATA_ACTION,
+			]
+		);
 	}
 }
