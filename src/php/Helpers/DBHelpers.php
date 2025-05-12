@@ -292,10 +292,15 @@ class DBHelpers {
 	 */
 	public static function get_all_providers_by_service_category_id( int $service_category_id ) {
 		global $wpdb;
-		$table_name_providers = $wpdb->prefix . 'sbip_providers';
-		$table_name_services  = $wpdb->prefix . 'sbip_services';
+		$table_name_providers         = $wpdb->prefix . 'sbip_providers';
+		$table_name_services          = $wpdb->prefix . 'sbip_services';
+		$table_name_location_provider = $wpdb->prefix . 'sbip_location_provider';
 
-		$sql = "SELECT p.* FROM $table_name_services AS s INNER JOIN $table_name_providers AS p ON p.id_sb = s.provider_id_sb WHERE s.service_sb_id = %s;";
+		$sql = "SELECT p.*, lp.location_id
+				FROM {$table_name_services} AS s
+				INNER JOIN {$table_name_providers} AS p ON p.id_sb = s.provider_id_sb
+				INNER JOIN {$table_name_location_provider} AS lp ON lp.provider_id = p.id_sb
+				WHERE s.service_sb_id = %s";
 		//phpcs:disable
 		$results = $wpdb->get_results( $wpdb->prepare( $sql, $service_category_id ) );
 		//phpcs:enable

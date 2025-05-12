@@ -64,6 +64,7 @@ class Main {
 		add_filter( 'service_filters', [ $this, 'handler_service_filters' ], 10, 1 );
 		add_filter( 'specialization_filters', [ $this, 'handler_specialization_filters' ], 10, 1 );
 		add_filter( 'service_sub_description', [ $this, 'handler_service_sub_description_filter' ], 10, 1 );
+		add_filter( 'single_template', [ $this, 'handler_single_template' ], 10, 1 );
 
 		new SimplybookBanner();
 		new SimplybookStaff();
@@ -159,9 +160,13 @@ class Main {
 			$min = '';
 		}
 
+		wp_enqueue_script( 'slick', $url . '/assets/js/slick.js', [ 'jquery' ], '1.5.9', true );
 		wp_enqueue_script( 'sbip_datepicer', $url . '/assets/js/jquery-ui-datepicker' . $min . '.js', [ 'jquery' ], '1.14.1 ', true );
+		wp_enqueue_script( 'sbip_tab', $url . '/assets/js/tabs' . $min . '.js', [ 'jquery' ], '3.4.1 ', true );
 		wp_enqueue_script( 'sbip_main', $url . '/assets/js/main' . $min . '.js', [ 'jquery' ], SBIP_PHP_REQUIRED_VERSION, true );
 
+		wp_enqueue_style( 'slick', $url . '/assets/css/slick' . $min . '.css', '', '1.5.9' );
+		wp_enqueue_style( 'slick-theme', $url . '/assets/css/slick-theme' . $min . '.css', '', '1.5.9' );
 		wp_enqueue_style( 'sbip_main', $url . '/assets/css/main' . $min . '.css', '', SBIP_PHP_REQUIRED_VERSION );
 
 		wp_localize_script(
@@ -446,5 +451,24 @@ class Main {
 				'syncAction' => AppointmentAjax::SYNC_SYMPLIBOOK_DATA_ACTION,
 			]
 		);
+	}
+
+	/**
+	 * Handler single template.
+	 *
+	 * @param string $template
+	 *
+	 * @return string
+	 */
+	public function handler_single_template( string $template ): string {
+		if ( is_singular( 'services' ) ) {
+			$plugin_template = SBIP_PLUGIN_DIR_PATH . '/templates/single-services.php';
+			$theme_template  = get_stylesheet_directory() . '/single-services.php';
+			if ( ! file_exists( $theme_template ) ) {
+				return $plugin_template;
+			}
+		}
+
+		return $template;
 	}
 }

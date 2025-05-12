@@ -66,7 +66,7 @@ $active = ! empty( $_GET['category_id'] ) ? (int) $_GET['category_id'] : $servic
 												$doctor->id_sb,
 												$doctor->id_s_dublicat ?? '',
 											]
-										)
+										) . '&location=' . $doctor->location_id
 									);
 									?>
 									"

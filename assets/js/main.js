@@ -12,20 +12,6 @@
  */
 
 jQuery( document ).ready( function( $ ) {
-	$( '.more' ).click( function( e ) {
-		e.preventDefault();
-		var more = $( this );
-		if ( more.prev().hasClass( 'open' ) ) {
-			more.prev().removeClass( 'open' ).slideUp();
-			more.text( 'Читати детальніше' ).removeClass( 'arrow-top' );
-			more.parent().find( '.specialization' ).show();
-		} else {
-			more.prev().addClass( 'open' ).slideDown();
-			more.text( 'Сховати' ).addClass( 'arrow-top' );
-			more.parent().find( '.specialization' ).hide();
-		}
-
-	} );
 
 	const doctorsMenu = $( '.doctors-category-menu' );
 	if ( doctorsMenu.length ) {
@@ -233,4 +219,43 @@ jQuery( document ).ready( function( $ ) {
 			} );
 		} );
 	}
+
+	$( '.slider-before-after' ).slick( {
+		slidesToShow: 3.6,
+		prevArrow: '<i class="icon-arrow-left"></i>',
+		nextArrow: '<i class="icon-arrow-right"></i>',
+		draggable: false,
+		infinite: false,
+		responsive: [
+			{
+				breakpoint: 1450,
+				settings: {
+					slidesToShow: 2.84
+				}
+			},
+			{
+				breakpoint: 769,
+				settings: {
+					slidesToShow: 1.84
+				}
+			}, {
+				breakpoint: 576,
+				settings: {
+					slidesToShow: 1,
+					centerMode: true,
+					centerPadding: '30px',
+					infinite: true,
+				}
+			} ]
+	} );
+
+	$( '.slider-item' ).beforeAfter( {
+		movable: true,
+		clickMove: true,
+		position: 50,
+		separatorColor: '#4D2A14',
+		opacity: 1,
+		arrowColor: '#fff',
+		bulletColor: '#4D2A14',
+	} );
 } );
