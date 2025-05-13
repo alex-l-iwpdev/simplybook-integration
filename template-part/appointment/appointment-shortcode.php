@@ -20,6 +20,7 @@ $location_selected = ! empty( $_GET['location'] ) ? (int) $_GET['location'] : $l
 //phpcs:enable
 
 ?>
+<a href="#" class="back-button icon-arrow-left"></a>
 <form
 		class="appointment"
 		method="post"

@@ -313,9 +313,10 @@ class Main {
 	public function handler_provider_filters( $providers ): array {
 		$temp_providers = [];
 		$map            = [];
-
+		
 		foreach ( $providers as $provider ) {
 			$name = rtrim( $provider->name, '*' );
+			$name = trim( $name );
 
 			if ( ! isset( $map[ $name ] ) ) {
 				$map[ $name ] = [
@@ -339,15 +340,19 @@ class Main {
 					$new_provider->id_s_dublicat = $group['dublic']->id_sb;
 				}
 
-				$temp_providers[] = $new_provider;
-			} elseif ( $group['dublic'] ) {
-				$new_provider       = clone $group['dublic'];
-				$new_provider->name = rtrim( $new_provider->name, '*' );
-				$temp_providers[]   = $new_provider;
+				$temp_providers[ $name ] = $new_provider;
 			}
 		}
 
-		return $temp_providers;
+		foreach ( $map as $name => $group ) {
+			if ( ! isset( $temp_providers[ $name ] ) && $group['dublic'] ) {
+				$new_provider            = clone $group['dublic'];
+				$new_provider->name      = rtrim( $new_provider->name, '*' );
+				$temp_providers[ $name ] = $new_provider;
+			}
+		}
+
+		return array_values( $temp_providers );
 	}
 
 	/**
@@ -411,6 +416,10 @@ class Main {
 	public function handler_service_sub_description_filter( string $description ): string {
 		$dom = new DOMDocument();
 		libxml_use_internal_errors( true );
+
+		if ( empty( $description ) ) {
+			return '';
+		}
 
 		$dom->loadHTML( mb_convert_encoding( $description, 'HTML-ENTITIES', 'UTF-8' ) );
 		$xpath = new DOMXPath( $dom );

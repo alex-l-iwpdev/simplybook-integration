@@ -20,16 +20,20 @@ jQuery( document ).ready( function( $ ) {
 				$( '.doctors-category-menu' ).slick( {
 					variableWidth: true,
 					infinite: false,
-					arrows: false,
+					prevArrow: '<i class="icon-arrow-left"></i>',
+					nextArrow: '<i class="icon-arrow-right"></i>',
 					dots: true,
+					speed: 500,
 				} );
 			}
 		} else {
 			$( '.doctors-category-menu' ).slick( {
 				variableWidth: true,
 				infinite: false,
-				arrows: false,
+				prevArrow: '<i class="icon-arrow-left"></i>',
+				nextArrow: '<i class="icon-arrow-right"></i>',
 				dots: true,
+				speed: 500,
 			} );
 		}
 
@@ -109,7 +113,7 @@ jQuery( document ).ready( function( $ ) {
 							minDate: 0,
 							beforeShowDay: function( date ) {
 								var string = jQuery.datepicker.formatDate( 'yy-mm-dd', date );
-								return [ res.data.date.indexOf( string ) == -1 ];
+								return [ res.data.date.indexOf( string ) == -1, 'active-date' ];
 							},
 							onSelect: function( dateText, inst ) {
 								addSlotTime( dateText, data.service, data.provider );
@@ -265,6 +269,7 @@ jQuery( document ).ready( function( $ ) {
 				}
 			} ]
 	} );
+
 	if ( $( '.slider-item' ).length ) {
 		$( '.slider-item' ).beforeAfter( {
 			movable: true,
@@ -274,6 +279,16 @@ jQuery( document ).ready( function( $ ) {
 			opacity: 1,
 			arrowColor: '#fff',
 			bulletColor: '#4D2A14',
+		} );
+	}
+
+	const backButton = $( '.back-button' );
+	if ( backButton.length ) {
+		backButton.click( function( e ) {
+			e.preventDefault();
+			const preloader = $( '.datepicker-block .pswp__preloader__icn' );
+			preloader.show();
+			window.history.back();
 		} );
 	}
 } );

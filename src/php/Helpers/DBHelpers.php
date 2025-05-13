@@ -286,23 +286,20 @@ class DBHelpers {
 	/**
 	 * Get all providers by service category id.
 	 *
-	 * @param int $service_category_id Service id.
-	 *
 	 * @return array|object|stdClass[]
 	 */
-	public static function get_all_providers_by_service_category_id( int $service_category_id ) {
+	public static function get_all_providers() {
 		global $wpdb;
 		$table_name_providers         = $wpdb->prefix . 'sbip_providers';
-		$table_name_services          = $wpdb->prefix . 'sbip_services';
 		$table_name_location_provider = $wpdb->prefix . 'sbip_location_provider';
 
-		$sql = "SELECT p.*, lp.location_id
-				FROM {$table_name_services} AS s
-				INNER JOIN {$table_name_providers} AS p ON p.id_sb = s.provider_id_sb
-				INNER JOIN {$table_name_location_provider} AS lp ON lp.provider_id = p.id_sb
-				WHERE s.service_sb_id = %s";
+		$sql = "SELECT p.*, GROUP_CONCAT(DISTINCT lp.location_id) AS locations
+				FROM $table_name_providers AS p
+				INNER JOIN $table_name_location_provider AS lp ON lp.provider_id = p.id_sb
+				WHERE p.is_visible = 1
+				GROUP BY p.id_sb;";
 		//phpcs:disable
-		$results = $wpdb->get_results( $wpdb->prepare( $sql, $service_category_id ) );
+		$results = $wpdb->get_results( $sql );
 		//phpcs:enable
 		if ( empty( $results ) ) {
 			return [];
@@ -711,7 +708,7 @@ class DBHelpers {
 		$table_name_providers = $wpdb->prefix . 'sbip_services';
 
 		//phpcs:disable
-		$sql    = "SELECT * FROM $table_name_providers WHERE `provider_id_sb` = %d ORDER BY `service_sb_id` ASC";
+		$sql    = "SELECT * FROM $table_name_providers WHERE `provider_id_sb` = %d ORDER BY `service_sb_id` AND `service_is_visible` = 1 ASC";
 		$result = $wpdb->get_results( $wpdb->prepare( $sql, $provider_id ) );
 		//phpcs:enable
 

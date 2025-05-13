@@ -56,12 +56,6 @@ class SimplybookServices {
 			'icon'                    => '',
 			'params'                  => [
 				[
-					'type'       => 'textfield',
-					'value'      => '',
-					'heading'    => __( 'Title', 'simplybook-integration' ),
-					'param_name' => 'title',
-				],
-				[
 					'type'       => 'textarea',
 					'value'      => '',
 					'heading'    => __( 'Sub title', 'simplybook-integration' ),

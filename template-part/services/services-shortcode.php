@@ -17,8 +17,6 @@ $active = ! empty( $_GET['category_id'] ) ? (int) $_GET['category_id'] : (int) $
 $services = apply_filters( 'service_filters', DBHelpers::get_services_by_category( $active ) );
 ?>
 <div class="services-wrapper">
-	<h1><?php echo esc_html( $service_title ); ?></h1>
-	<hr class="sline">
 	<h2>
 		<?php echo wp_kses_post( $sub_title ); ?>
 	</h2>
@@ -50,9 +48,10 @@ $services = apply_filters( 'service_filters', DBHelpers::get_services_by_categor
 					</div>
 					<div class="td">
 						<p><?php echo esc_html( $service_sub_description ); ?></p>
-						<a href="<?php echo esc_url( get_the_permalink( $service->service_post_id ) ); ?>" class="more">
-							<?php esc_attr_e( 'детальніше', 'simplybook-integration' ); ?>
-						</a>
+						<!--						<a href="-->
+						<?php //echo esc_url( get_the_permalink( $service->service_post_id ) ); ?><!--" class="more">-->
+						<!--							--><?php //esc_attr_e( 'детальніше', 'simplybook-integration' ); ?>
+						<!--						</a>-->
 					</div>
 					<div class="td">
 						<p class="clock"><?php echo esc_html( $service->service_duration . __( ' хв', 'simplybook-integration' ) ); ?></p>
