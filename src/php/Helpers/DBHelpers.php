@@ -29,7 +29,7 @@ class DBHelpers {
 		$table_name_services_category = $wpdb->prefix . 'sbip_services_category';
 		//phpcs:disable
 		$service_category_isset = $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM $table_name_services_category WHERE category_id = %d AND service_sb_id = %d", $id, $service_id )
+			$wpdb->prepare( "SELECT * FROM $table_name_services_category WHERE category_sb_id = %d AND service_sb_id = %d", $id, $service_id )
 		);
 
 		if ( empty( $service_category_isset ) ) {
@@ -274,7 +274,7 @@ class DBHelpers {
 		$table_name_services_category = $wpdb->prefix . 'sbip_services_category';
 
 		//phpcs:disable
-		$results = $wpdb->get_results( "SELECT * FROM $table_name_services_category WHERE `category_is_active` = 1 GROUP BY `category_sb_id`;" );
+		$results = $wpdb->get_results( "SELECT * FROM $table_name_services_category WHERE `category_is_active` = 1 AND `category_is_active` = 1  GROUP BY `category_sb_id`;" );
 		//phpcs:enable
 		if ( empty( $results ) ) {
 			return [];
