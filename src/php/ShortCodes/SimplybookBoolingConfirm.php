@@ -59,10 +59,14 @@ class SimplybookBoolingConfirm {
 			<?php
 			if ( ! empty( $service_data ) ) {
 				foreach ( $service_data as $service_item ) {
+					$image_url = Main::SBIP_BASE_IMAGE_URL . $service_item->picture_preview;
+					if ( empty( $service_item->picture_preview ) ) {
+						$image_url = SBIP_URL . '/assets/img/img.png';
+					}
 					?>
 					<div class="procedure">
 						<img
-								src="<?php echo esc_url( Main::SBIP_BASE_IMAGE_URL . $service_item->picture_preview ); ?>"
+								src="<?php echo esc_url( $image_url ); ?>"
 								alt="<?php echo esc_html( $service_item->service_name ?? '' ); ?>">
 						<div class="desc-confirm">
 							<h3><?php echo esc_html( $item->service_name ?? '' ); ?> </h3>

@@ -67,7 +67,7 @@ jQuery( document ).ready( function( $ ) {
 		const preloader = $( '.datepicker-block .pswp__preloader__icn' );
 		specialistElements.change( function( e ) {
 
-			$('.service input:not([checked])').next().removeClass( 'icon-check' ).addClass( 'icon-plus' );
+			$( '.service input:not([checked])' ).next().removeClass( 'icon-check' ).addClass( 'icon-plus' );
 			$( this ).next( 'label' ).removeClass( 'icon-plus' ).addClass( 'icon-check' );
 
 			let data = {
@@ -265,7 +265,7 @@ jQuery( document ).ready( function( $ ) {
 				}
 			} ]
 	} );
-	if($( '.slider-item' ).length){
+	if ( $( '.slider-item' ).length ) {
 		$( '.slider-item' ).beforeAfter( {
 			movable: true,
 			clickMove: true,

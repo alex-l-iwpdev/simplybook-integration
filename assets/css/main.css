@@ -378,6 +378,7 @@
 	position: relative;
 	display: flex;
 	flex-direction: column;
+	container-type: inline-size;
 }
 .doctors-profiles .photo .tag{
 	position: absolute;
@@ -397,7 +398,9 @@
 .doctors-profiles .photo img{
 	border-radius: 10px;
 	width: 100%;
-
+	height: calc(100cqw * 1.5);
+	object-fit: cover;
+	object-position: center;
 }
 .doctors-profiles h6{
 	text-overflow: ellipsis;

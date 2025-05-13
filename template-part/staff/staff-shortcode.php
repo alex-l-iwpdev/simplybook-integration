@@ -21,7 +21,7 @@ $active = ! empty( $_GET['category_id'] ) ? (int) $_GET['category_id'] : $servic
 			<?php if ( ! empty( $service_categories ) ) { ?>
 				<ul class="doctors-category-menu">
 					<?php foreach ( $service_categories as $key => $service_category ) { ?>
-						<li class="<?php echo (int) $service_category->service_sb_id === $active ? 'active' : ''; ?>">
+						<li class="<?php echo (int) $service_category->service_sb_id === (int) $active ? 'active' : ''; ?>">
 							<a
 									href="#"
 									data-service_sb_id="<?php echo esc_attr( $service_category->service_sb_id ); ?>">
@@ -40,11 +40,16 @@ $active = ! empty( $_GET['category_id'] ) ? (int) $_GET['category_id'] : $servic
 			foreach ( $doctors as $key => $doctor ) {
 				if ( $doctor->is_active ) {
 					$specialization = apply_filters( 'specialization_filters', $doctor->description );
+
+					$image_url = Main::SBIP_BASE_IMAGE_URL . $doctor->picture_preview;
+					if ( empty( $doctor->picture_preview ) ) {
+						$image_url = SBIP_URL . '/assets/img/no-image.jpg';
+					}
 					?>
 					<div class="doctors-profile">
 						<div class="photo">
 							<img
-									src="<?php echo esc_url( Main::SBIP_BASE_IMAGE_URL . $doctor->picture_preview ); ?>"
+									src="<?php echo esc_url( $image_url ); ?>"
 									alt="<?php echo esc_html( $doctor->name ); ?>">
 						</div>
 						<div class="doctors-profile-description">
