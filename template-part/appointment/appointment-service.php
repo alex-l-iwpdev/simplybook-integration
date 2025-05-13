@@ -30,6 +30,7 @@ if ( is_array( $atts['service'] ) ) {
 					id="service-<?php echo esc_attr( $key ); ?>"
 					type="radio"
 					name="service_id"
+				<?php checked( $is_one_service, true ); ?>
 					value="<?php echo esc_attr( $item->service_sb_id ); ?>">
 			<label
 					for="service-<?php echo esc_attr( $key ); ?>"
