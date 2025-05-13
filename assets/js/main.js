@@ -53,6 +53,7 @@ jQuery( document ).ready( function( $ ) {
 			nextText: '',
 			gotoCurrent: true,
 			dateFormat: 'yy-mm-dd',
+			minDate: 0,
 		} );
 
 		$( '.ui-datepicker-month' ).select2( {
@@ -66,6 +67,7 @@ jQuery( document ).ready( function( $ ) {
 		const preloader = $( '.datepicker-block .pswp__preloader__icn' );
 		specialistElements.change( function( e ) {
 
+			$('.service input:not([checked])').next().removeClass( 'icon-check' ).addClass( 'icon-plus' );
 			$( this ).next( 'label' ).removeClass( 'icon-plus' ).addClass( 'icon-check' );
 
 			let data = {
@@ -104,14 +106,27 @@ jQuery( document ).ready( function( $ ) {
 							nextText: '',
 							gotoCurrent: true,
 							dateFormat: 'yy-mm-dd',
+							minDate: 0,
 							beforeShowDay: function( date ) {
 								var string = jQuery.datepicker.formatDate( 'yy-mm-dd', date );
 								return [ res.data.date.indexOf( string ) == -1 ];
 							},
 							onSelect: function( dateText, inst ) {
 								addSlotTime( dateText, data.service, data.provider );
+								setTimeout( function() {
+									$( '.ui-datepicker-month' ).select2( {
+										minimumResultsForSearch: Infinity,
+										dropdownParent: '.ui-datepicker-title',
+									} );
+								}, 50 );
 							}
 						} );
+						setTimeout( function() {
+							$( '.ui-datepicker-month' ).select2( {
+								minimumResultsForSearch: Infinity,
+								dropdownParent: '.ui-datepicker-title',
+							} );
+						}, 50 );
 					}
 				},
 				error: function( xhr ) {
@@ -206,11 +221,13 @@ jQuery( document ).ready( function( $ ) {
 					preloader.hide();
 					if ( res.success ) {
 						location.href = sbipObject.mainPageUrl;
+
 					}
 
 					if ( ! res.success ) {
 						alert( 'Some Error.' );
 					}
+
 				},
 				error: function( xhr ) {
 					console.log( 'error...', xhr );
@@ -248,14 +265,15 @@ jQuery( document ).ready( function( $ ) {
 				}
 			} ]
 	} );
-
-	$( '.slider-item' ).beforeAfter( {
-		movable: true,
-		clickMove: true,
-		position: 50,
-		separatorColor: '#4D2A14',
-		opacity: 1,
-		arrowColor: '#fff',
-		bulletColor: '#4D2A14',
-	} );
+	if($( '.slider-item' ).length){
+		$( '.slider-item' ).beforeAfter( {
+			movable: true,
+			clickMove: true,
+			position: 50,
+			separatorColor: '#4D2A14',
+			opacity: 1,
+			arrowColor: '#fff',
+			bulletColor: '#4D2A14',
+		} );
+	}
 } );

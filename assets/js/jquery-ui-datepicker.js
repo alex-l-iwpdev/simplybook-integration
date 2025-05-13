@@ -336,6 +336,7 @@
 
 				input[ isRTL ? 'before' : 'after' ]( inst.trigger );
 				inst.trigger.on( 'click', function() {
+					
 					if ( $.datepicker._datepickerShowing && $.datepicker._lastInput === input[ 0 ] ) {
 						$.datepicker._hideDatepicker();
 					} else if ( $.datepicker._datepickerShowing && $.datepicker._lastInput !== input[ 0 ] ) {
@@ -345,6 +346,7 @@
 						$.datepicker._showDatepicker( input[ 0 ] );
 					}
 					return false;
+					
 				} );
 			}
 		},
@@ -1073,6 +1075,7 @@
 				( $target.hasClass( $.datepicker.markerClassName ) && $.datepicker._curInst !== inst ) ) {
 				$.datepicker._hideDatepicker();
 			}
+			
 		},
 
 		/* Adjust one of the date sub-fields. */
