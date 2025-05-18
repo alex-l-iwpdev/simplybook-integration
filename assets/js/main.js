@@ -14,14 +14,28 @@
 jQuery( document ).ready( function( $ ) {
 
 	const doctorsMenu = $( '.doctors-category-menu' );
+	const personalSlider = $('.doctors-profiles');
+	$('.more').click(function(e){
+		e.preventDefault();
+		var more = $(this);
+		if(more.prev().hasClass('open')){
+			more.prev().removeClass('open').slideUp();
+			more.text('Читати детальніше').removeClass('arrow-top');
+			more.parent().find('.specialization').show();
+		}else{
+			more.prev().addClass('open').slideDown();
+			more.text('Сховати').addClass('arrow-top');
+			more.parent().find('.specialization').hide();
+		};
+	});
 	if ( doctorsMenu.length ) {
 		if ( $( window ).width() >= 1200 ) {
 			if ( doctorsMenu.children().length > 5 ) {
 				$( '.doctors-category-menu' ).slick( {
 					variableWidth: true,
 					infinite: false,
-					prevArrow: '<i class="icon-arrow-left"></i>',
-					nextArrow: '<i class="icon-arrow-right"></i>',
+					prevArrow:'<i class="icon-arrow-left"></i>',
+					nextArrow:'<i class="icon-arrow-right"></i>',
 					dots: true,
 					speed: 500,
 				} );
@@ -30,13 +44,13 @@ jQuery( document ).ready( function( $ ) {
 			$( '.doctors-category-menu' ).slick( {
 				variableWidth: true,
 				infinite: false,
-				prevArrow: '<i class="icon-arrow-left"></i>',
-				nextArrow: '<i class="icon-arrow-right"></i>',
+				prevArrow:'<i class="icon-arrow-left"></i>',
+				nextArrow:'<i class="icon-arrow-right"></i>',
 				dots: true,
 				speed: 500,
 			} );
 		}
-
+		
 		doctorsMenu.find( 'li > a' ).click( function( e ) {
 			e.preventDefault();
 
@@ -45,7 +59,13 @@ jQuery( document ).ready( function( $ ) {
 			window.location.href = url.toString();
 		} );
 	}
-
+	if(personalSlider.length){
+		personalSlider.slick({
+			variableWidth: true,
+			prevArrow:'<i class="icon-arrow-left"></i>',
+			nextArrow:'<i class="icon-arrow-right"></i>',
+		});
+	}
 	const datePicker = $( '.datepicker' );
 	if ( datePicker.length ) {
 		datePicker.datepicker( {
@@ -65,7 +85,7 @@ jQuery( document ).ready( function( $ ) {
 			dropdownParent: '.ui-datepicker-title',
 		} );
 	}
-
+	
 	const specialistElements = $( '[name=specialist], [name=service_id]' );
 	if ( specialistElements.length ) {
 		const preloader = $( '.datepicker-block .pswp__preloader__icn' );
@@ -111,9 +131,12 @@ jQuery( document ).ready( function( $ ) {
 							gotoCurrent: true,
 							dateFormat: 'yy-mm-dd',
 							minDate: 0,
+							beforeShow: function(Element){
+								console.log(Element)
+							},
 							beforeShowDay: function( date ) {
 								var string = jQuery.datepicker.formatDate( 'yy-mm-dd', date );
-								return [ res.data.date.indexOf( string ) == -1, 'active-date' ];
+								return [ res.data.date.indexOf( string ) == -1 , "active-date"];
 							},
 							onSelect: function( dateText, inst ) {
 								addSlotTime( dateText, data.service, data.provider );

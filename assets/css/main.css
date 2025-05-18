@@ -252,6 +252,7 @@
 .doctors-category {
 	position: relative;
 	padding-top: 54px;
+	container-type: inline-size;
 }
 
 .doctors-category-filter h2 {
@@ -309,10 +310,11 @@
 .doctors-category-wrapper.brown {
 	border-radius: 10px;
 	background: rgb(77, 42, 20);
-	padding: 30px 20px;
+	padding: 30px 20px 60px;
 }
 
 .doctors-category-wrapper h3 {
+	margin-top: 85px !important;
 	font-size: 35px;
 	font-weight: 400;
 	line-height: 120%;
@@ -352,17 +354,19 @@
 	background: #4D2A14;
 	color: #fff;
 }
-
+.doctors-profiles.slick-slider .icon-arrow-left ,
 .doctors-category-menu.slick-dotted.slick-slider .icon-arrow-left {
 	margin-left: auto;
 }
-
+.doctors-profiles.slick-slider .icon-arrow-left,
+.doctors-profiles.slick-slider .icon-arrow-right,
 .doctors-category-menu.slick-dotted.slick-slider .icon-arrow-left,
 .doctors-category-menu.slick-dotted.slick-slider .icon-arrow-right {
 	order: -1;
 	cursor: pointer;
 }
-
+.doctors-profiles.slick-slider .icon-arrow-left:before,
+.doctors-profiles.slick-slider .icon-arrow-right:before,
 .doctors-category-menu.slick-dotted.slick-slider .icon-arrow-left:before,
 .doctors-category-menu.slick-dotted.slick-slider .icon-arrow-right:before {
 	width: 50px;
@@ -375,7 +379,8 @@
 	border-radius: 50%;
 	transition: all 0.3s ease;
 }
-
+.doctors-profiles.slick-slider .icon-arrow-left:hover:before,
+.doctors-profiles.slick-slider .icon-arrow-right:hover:before,
 .doctors-category-menu.slick-dotted.slick-slider .icon-arrow-right:hover:before,
 .doctors-category-menu.slick-dotted.slick-slider .icon-arrow-left:hover:before {
 	background: #4D2A14;
@@ -478,6 +483,21 @@
 	margin-top: 40px;
 }
 
+.doctors-profiles.slick-slider{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	container-type: inline-size;
+}
+.doctors-profiles.slick-slider .slick-track{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	gap: 22px;
+}
+.doctors-profiles.slick-slider .doctors-profile{
+	width: calc((100cqw - 44px) / 3);
+}
 .doctors-profiles .photo {
 	position: relative;
 	display: flex;
@@ -593,10 +613,12 @@
 
 .doctors-profiles .hide {
 	display: none;
+	padding-bottom: 20px;
 }
 
 .doctors-profiles .doctors-profile {
 	width: calc((100% - 44px) / 3);
+	height: auto;
 }
 
 .doctors-category-menu li.active {
@@ -1854,6 +1876,7 @@
 	.doctors-category-wrapper h3 {
 		width: 100%;
 		text-align: center;
+		margin-top: 0 !important; 
 	}
 
 	.appointment .right-block,
@@ -1910,7 +1933,9 @@
 	.doctors-category-menu .slick-track {
 		gap: 18px;
 	}
-
+	.doctors-profiles.slick-slider .doctors-profile{
+		width: 100cqw;
+	}
 	.doctors-profiles .doctors-profile {
 		width: 100%;
 	}
@@ -2199,7 +2224,9 @@
 		transform: translateX(-50%);
 		position: relative;
 	}
-
+	.doctors-category-menu.slick-dotted.slick-slider .icon-arrow-right{
+		margin-right: 15px;
+	}
 	.before-after-block .icon-arrow-left,
 	.before-after-block .icon-arrow-right {
 		top: 0;
@@ -2238,7 +2265,7 @@
 	}
 
 	.doctors-category-wrapper.brown {
-		padding-bottom: 50px;
+		padding-bottom: 60px;
 		padding-right: 0;
 	}
 

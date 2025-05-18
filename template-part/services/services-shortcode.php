@@ -40,6 +40,7 @@ $services = apply_filters( 'service_filters', DBHelpers::get_services_by_categor
 		<?php
 		if ( ! empty( $services ) ) {
 			foreach ( $services as $service ) {
+//				$service_sub_description = apply_filters( 'service_sub_description', $service->service_description );
 				?>
 				<div class="tr">
 					<div class="th">

@@ -718,4 +718,25 @@ class DBHelpers {
 
 		return $result;
 	}
+
+	/**
+	 * Clear tables before sync
+	 *
+	 * @return void
+	 */
+	public static function clear_tables_before_sync(): void {
+		global $wpdb;
+
+		$tables = [
+			$wpdb->prefix . 'sbip_location',
+			$wpdb->prefix . 'sbip_location_provider',
+			$wpdb->prefix . 'sbip_providers',
+			$wpdb->prefix . 'sbip_services_category',
+			$wpdb->prefix . 'sbip_services',
+		];
+
+		foreach ( $tables as $table ) {
+			$response = $wpdb->query( "TRUNCATE TABLE $table" );
+		}
+	}
 }

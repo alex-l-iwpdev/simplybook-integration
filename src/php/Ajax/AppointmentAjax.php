@@ -8,6 +8,7 @@
 namespace Iwpdev\SimplybookIntegration\Ajax;
 
 use Iwpdev\SimplybookIntegration\API\SimplyBookApi;
+use Iwpdev\SimplybookIntegration\Helpers\DBHelpers;
 use Iwpdev\SimplybookIntegration\Main;
 
 /**
@@ -291,6 +292,7 @@ class AppointmentAjax {
 
 		$api_client = new SimplyBookApi();
 
+		DBHelpers::clear_tables_before_sync();
 		$api_client->get_all_service_category();
 		$api_client->get_all_services();
 		$api_client->get_all_providers();

@@ -8,6 +8,7 @@
 namespace Iwpdev\SimplybookIntegration\Admin\Cron;
 
 use Iwpdev\SimplybookIntegration\API\SimplyBookApi;
+use Iwpdev\SimplybookIntegration\Helpers\DBHelpers;
 
 /**
  * SyncCron class.
@@ -54,6 +55,8 @@ class SyncCron {
 	 */
 	public function run_task(): void {
 		$api_client = new SimplyBookApi();
+
+		DBHelpers::clear_tables_before_sync();
 
 		$api_client->get_all_service_category();
 		$api_client->get_all_services();
