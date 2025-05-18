@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Plugin version.
  */
-const SBIP_VERSION = '1.0.0';
+const SBIP_VERSION = '1.0.1';
 
 /**
  * Plugin dir path.
