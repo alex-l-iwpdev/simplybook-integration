@@ -7,6 +7,9 @@
 
 namespace Iwpdev\SimplybookIntegration\Ajax;
 
+use DateTimeImmutable;
+use DateTimeZone;
+use Exception;
 use Iwpdev\SimplybookIntegration\API\SimplyBookApi;
 use Iwpdev\SimplybookIntegration\Helpers\DBHelpers;
 use Iwpdev\SimplybookIntegration\Main;
@@ -108,8 +111,23 @@ class AppointmentAjax {
 			);
 		}
 
-		$today     = gmdate( 'Y-m-d' );
-		$end_month = gmdate( 'Y-m-t' );
+		$date = ! empty( $_POST['date'] ) ? filter_var( wp_unslash( $_POST['date'] ), FILTER_SANITIZE_FULL_SPECIAL_CHARS ) : null;
+
+		if ( empty( $date ) ) {
+			// Нет даты — используем текущую
+			$today     = gmdate( 'Y-m-d' );
+			$end_month = gmdate( 'Y-m-t' );
+		} else {
+			// Есть дата — используем её месяц
+			try {
+				$dt        = new DateTimeImmutable( $date, new DateTimeZone( 'UTC' ) );
+				$today     = $dt->format( 'Y-m-01' );
+				$end_month = $dt->format( 'Y-m-t' );
+			} catch ( Exception $e ) {
+				$today     = gmdate( 'Y-m-d' );
+				$end_month = gmdate( 'Y-m-t' );
+			}
+		}
 
 		$api_client = new SimplyBookApi();
 		$response   = $api_client->get_schedule(

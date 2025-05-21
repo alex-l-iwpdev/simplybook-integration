@@ -12,30 +12,33 @@
  */
 
 jQuery( document ).ready( function( $ ) {
+	let selectDate = '';
+	let flag = true;
 
 	const doctorsMenu = $( '.doctors-category-menu' );
-	const personalSlider = $('.doctors-profiles');
-	$('.more').click(function(e){
+	const personalSlider = $( '.doctors-profiles' );
+	$( '.more' ).click( function( e ) {
 		e.preventDefault();
-		var more = $(this);
-		if(more.prev().hasClass('open')){
-			more.prev().removeClass('open').slideUp();
-			more.text('Читати детальніше').removeClass('arrow-top');
-			more.parent().find('.specialization').show();
-		}else{
-			more.prev().addClass('open').slideDown();
-			more.text('Сховати').addClass('arrow-top');
-			more.parent().find('.specialization').hide();
-		};
-	});
+		var more = $( this );
+		if ( more.prev().hasClass( 'open' ) ) {
+			more.prev().removeClass( 'open' ).slideUp();
+			more.text( 'Читати детальніше' ).removeClass( 'arrow-top' );
+			more.parent().find( '.specialization' ).show();
+		} else {
+			more.prev().addClass( 'open' ).slideDown();
+			more.text( 'Сховати' ).addClass( 'arrow-top' );
+			more.parent().find( '.specialization' ).hide();
+		}
+
+	} );
 	if ( doctorsMenu.length ) {
 		if ( $( window ).width() >= 1200 ) {
 			if ( doctorsMenu.children().length > 5 ) {
 				$( '.doctors-category-menu' ).slick( {
 					variableWidth: true,
 					infinite: false,
-					prevArrow:'<i class="icon-arrow-left"></i>',
-					nextArrow:'<i class="icon-arrow-right"></i>',
+					prevArrow: '<i class="icon-arrow-left"></i>',
+					nextArrow: '<i class="icon-arrow-right"></i>',
 					dots: true,
 					speed: 500,
 				} );
@@ -44,13 +47,13 @@ jQuery( document ).ready( function( $ ) {
 			$( '.doctors-category-menu' ).slick( {
 				variableWidth: true,
 				infinite: false,
-				prevArrow:'<i class="icon-arrow-left"></i>',
-				nextArrow:'<i class="icon-arrow-right"></i>',
+				prevArrow: '<i class="icon-arrow-left"></i>',
+				nextArrow: '<i class="icon-arrow-right"></i>',
 				dots: true,
 				speed: 500,
 			} );
 		}
-		
+
 		doctorsMenu.find( 'li > a' ).click( function( e ) {
 			e.preventDefault();
 
@@ -59,12 +62,12 @@ jQuery( document ).ready( function( $ ) {
 			window.location.href = url.toString();
 		} );
 	}
-	if(personalSlider.length){
-		personalSlider.slick({
+	if ( personalSlider.length ) {
+		personalSlider.slick( {
 			variableWidth: true,
-			prevArrow:'<i class="icon-arrow-left"></i>',
-			nextArrow:'<i class="icon-arrow-right"></i>',
-		});
+			prevArrow: '<i class="icon-arrow-left"></i>',
+			nextArrow: '<i class="icon-arrow-right"></i>',
+		} );
 	}
 	const datePicker = $( '.datepicker' );
 	if ( datePicker.length ) {
@@ -78,6 +81,23 @@ jQuery( document ).ready( function( $ ) {
 			gotoCurrent: true,
 			dateFormat: 'yy-mm-dd',
 			minDate: 0,
+			beforeShowDay: function( date ) {
+				let serviceCount = $( '.service [name=service_id]:checked' ).length;
+				let providerCount = $( '[name=specialist]:checked' ).length;
+
+				if ( serviceCount && providerCount && flag ) {
+					flag = false;
+					getAvailableDate( selectDate );
+				}
+
+				return [ true, '' ];
+			},
+			onChangeMonthYear: function( year, month, inst ) {
+				const firstDay = new Date( year, month - 1, 1 ); // ← month - 1 обязательно!
+				const formatted = $.datepicker.formatDate( 'yy-mm-dd', firstDay );
+				selectDate = formatted;
+				getAvailableDate( formatted );
+			}
 		} );
 
 		$( '.ui-datepicker-month' ).select2( {
@@ -85,7 +105,7 @@ jQuery( document ).ready( function( $ ) {
 			dropdownParent: '.ui-datepicker-title',
 		} );
 	}
-	
+
 	const specialistElements = $( '[name=specialist], [name=service_id]' );
 	if ( specialistElements.length ) {
 		const preloader = $( '.datepicker-block .pswp__preloader__icn' );
@@ -93,14 +113,6 @@ jQuery( document ).ready( function( $ ) {
 
 			$( '.service input:not([checked])' ).next().removeClass( 'icon-check' ).addClass( 'icon-plus' );
 			$( this ).next( 'label' ).removeClass( 'icon-plus' ).addClass( 'icon-check' );
-
-			let data = {
-				action: sbipObject.appointmentAction,
-				nonce: sbipObject.appointmentNonce,
-				location: $( '#sbip-location option:selected' ).val(),
-				service: $( '.service [name=service_id]:checked' ).val(),
-				provider: $( '[name=specialist]:checked' ).val()
-			};
 
 			$( '.provider' ).html( $( '.service .icon-check h5' ).text() );
 			$( '.price span' ).text( $( '.service .icon-check .icon-price' ).text() );
@@ -110,56 +122,7 @@ jQuery( document ).ready( function( $ ) {
 			let text = $( '.provider' ).text() + '<br>' + providerName;
 			$( 'p.provider' ).html( text );
 
-			$.ajax( {
-				type: 'POST',
-				url: sbipObject.ajaxUrl,
-				data: data,
-				beforeSend: function() {
-					preloader.show();
-					$( '.clocks-radio .clock-radio' ).remove();
-				},
-				success: function( res ) {
-					preloader.hide();
-					if ( res.success && res.data.date.length ) {
-						datePicker.datepicker( 'destroy' ).datepicker( {
-							showButtonPanel: true,
-							changeMonth: true,
-							changeYear: false,
-							showAnim: 'fold',
-							prevText: '',
-							nextText: '',
-							gotoCurrent: true,
-							dateFormat: 'yy-mm-dd',
-							minDate: 0,
-							beforeShow: function(Element){
-								console.log(Element)
-							},
-							beforeShowDay: function( date ) {
-								var string = jQuery.datepicker.formatDate( 'yy-mm-dd', date );
-								return [ res.data.date.indexOf( string ) == -1 , "active-date"];
-							},
-							onSelect: function( dateText, inst ) {
-								addSlotTime( dateText, data.service, data.provider );
-								setTimeout( function() {
-									$( '.ui-datepicker-month' ).select2( {
-										minimumResultsForSearch: Infinity,
-										dropdownParent: '.ui-datepicker-title',
-									} );
-								}, 50 );
-							}
-						} );
-						setTimeout( function() {
-							$( '.ui-datepicker-month' ).select2( {
-								minimumResultsForSearch: Infinity,
-								dropdownParent: '.ui-datepicker-title',
-							} );
-						}, 50 );
-					}
-				},
-				error: function( xhr ) {
-					console.log( 'error...', xhr );
-				}
-			} );
+			getAvailableDate( selectDate );
 		} );
 	}
 
@@ -312,6 +275,88 @@ jQuery( document ).ready( function( $ ) {
 			const preloader = $( '.datepicker-block .pswp__preloader__icn' );
 			preloader.show();
 			window.history.back();
+		} );
+	}
+
+	function getAvailableDate( date = null ) {
+
+		const preloader = $( '.datepicker-block .pswp__preloader__icn' );
+
+		let data = {
+			action: sbipObject.appointmentAction,
+			nonce: sbipObject.appointmentNonce,
+			location: $( '#sbip-location option:selected' ).val(),
+			service: $( '.service [name=service_id]:checked' ).val(),
+			provider: $( '[name=specialist]:checked' ).val(),
+			date: date
+		};
+
+		$.ajax( {
+			type: 'POST',
+			url: sbipObject.ajaxUrl,
+			data: data,
+			beforeSend: function() {
+				preloader.show();
+				$( '.clocks-radio .clock-radio' ).remove();
+			},
+			success: function( res ) {
+				preloader.hide();
+				flag = true;
+				if ( res.success && res.data.date.length ) {
+					datePicker.datepicker( 'destroy' ).datepicker( {
+						showButtonPanel: true,
+						changeMonth: true,
+						changeYear: false,
+						showAnim: 'fold',
+						prevText: '',
+						nextText: '',
+						gotoCurrent: true,
+						dateFormat: 'yy-mm-dd',
+						minDate: 0,
+						beforeShow: function( Element ) {
+							let serviceCount = $( '.service [name=service_id]:checked' ).length;
+							let providerCount = $( '[name=specialist]:checked' ).length;
+
+							if ( serviceCount && providerCount && flag ) {
+								flag = false;
+								getAvailableDate( selectDate );
+							}
+
+							return [ true, '' ];
+						},
+						beforeShowDay: function( date ) {
+							var string = jQuery.datepicker.formatDate( 'yy-mm-dd', date );
+							return [ res.data.date.indexOf( string ) == -1, 'active-date' ];
+						},
+						onChangeMonthYear: function( year, month, inst ) {
+							const firstDay = new Date( year, month - 1, 1 ); // ← month - 1 обязательно!
+							const formatted = $.datepicker.formatDate( 'yy-mm-dd', firstDay );
+							selectDate = formatted;
+							console.log( formatted );
+							getAvailableDate( formatted );
+						},
+						onSelect: function( dateText, inst ) {
+							console.log( dateText, inst );
+							addSlotTime( dateText, data.service, data.provider );
+							setTimeout( function() {
+								$( '.ui-datepicker-month' ).select2( {
+									minimumResultsForSearch: Infinity,
+									dropdownParent: '.ui-datepicker-title',
+								} );
+							}, 50 );
+						}
+					} );
+					setTimeout( function() {
+						$( '.ui-datepicker-month' ).select2( {
+							minimumResultsForSearch: Infinity,
+							dropdownParent: '.ui-datepicker-title',
+						} );
+					}, 50 );
+				}
+			},
+			error: function( xhr ) {
+				console.log( 'error...', xhr );
+			}
 		} );
 	}
 } );

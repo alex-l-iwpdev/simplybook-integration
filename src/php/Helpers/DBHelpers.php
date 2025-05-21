@@ -504,7 +504,7 @@ class DBHelpers {
 		$table_name_services_category = $wpdb->prefix . 'sbip_services_category';
 		$table_name_services          = $wpdb->prefix . 'sbip_services';
 
-		$sql = "SELECT s.* FROM $table_name_services AS s INNER JOIN $table_name_services_category AS p ON p.service_sb_id = s.service_sb_id WHERE p.category_sb_id = %d;";
+		$sql = "SELECT s.* FROM $table_name_services AS s INNER JOIN $table_name_services_category AS p ON p.service_sb_id = s.service_sb_id AND s.service_is_visible = 1 WHERE p.category_sb_id = %d;";
 
 		//phpcs:disable
 		$result = $wpdb->get_results( $wpdb->prepare( $sql, $category_id ) );
@@ -561,7 +561,7 @@ class DBHelpers {
 		$sql = "SELECT p.* 
 				FROM $table_name_providers AS p
 				LEFT JOIN $table_name_location_provider AS lp ON lp.provider_id = p.id_sb
-				WHERE p.id_sb IN ($prepare_in) AND lp.location_id = %s;";
+				WHERE p.id_sb IN ($prepare_in) AND p.is_visible = 1 AND lp.location_id = %s;";
 
 		$result = $wpdb->get_results( $wpdb->prepare( $sql, $location_id ) );
 		//phpcs:enable

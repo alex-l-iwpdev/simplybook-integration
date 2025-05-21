@@ -313,7 +313,7 @@ class Main {
 	public function handler_provider_filters( $providers ): array {
 		$temp_providers = [];
 		$map            = [];
-		
+
 		foreach ( $providers as $provider ) {
 			$name = rtrim( $provider->name, '*' );
 			$name = trim( $name );
@@ -390,6 +390,10 @@ class Main {
 	 * @return string
 	 */
 	public function handler_specialization_filters( string $description ): string {
+		if ( empty( $description ) ) {
+			return '';
+		}
+
 		$dom = new DOMDocument();
 		libxml_use_internal_errors( true );
 
