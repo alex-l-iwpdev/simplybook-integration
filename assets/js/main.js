@@ -125,8 +125,8 @@ jQuery( document ).ready( function( $ ) {
 		width: '100%',
 	} );
 
-	const service = $( '.service [name=service_id]:checked' ).val();
-	const provider = $( '[name=specialist]:checked' ).val();
+	const service = $( '.service [name=service_id]:checked' );
+	const provider = $( '[name=specialist]:checked' );
 
 	if ( service.length && provider.length ) {
 		getAvailableDate();

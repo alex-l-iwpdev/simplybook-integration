@@ -163,11 +163,11 @@ class Main {
 		wp_enqueue_script( 'slick', $url . '/assets/js/slick.js', [ 'jquery' ], '1.5.9', true );
 		wp_enqueue_script( 'sbip_datepicer', $url . '/assets/js/jquery-ui-datepicker' . $min . '.js', [ 'jquery' ], '1.14.1 ', true );
 		wp_enqueue_script( 'sbip_tab', $url . '/assets/js/tabs' . $min . '.js', [ 'jquery' ], '3.4.1 ', true );
-		wp_enqueue_script( 'sbip_main', $url . '/assets/js/main' . $min . '.js', [ 'jquery' ], SBIP_PHP_REQUIRED_VERSION, true );
+		wp_enqueue_script( 'sbip_main', $url . '/assets/js/main' . $min . '.js', [ 'jquery' ], SBIP_VERSION, true );
 
 		wp_enqueue_style( 'slick', $url . '/assets/css/slick' . $min . '.css', '', '1.5.9' );
 		wp_enqueue_style( 'slick-theme', $url . '/assets/css/slick-theme' . $min . '.css', '', '1.5.9' );
-		wp_enqueue_style( 'sbip_main', $url . '/assets/css/main' . $min . '.css', '', SBIP_PHP_REQUIRED_VERSION );
+		wp_enqueue_style( 'sbip_main', $url . '/assets/css/main' . $min . '.css', '', SBIP_VERSION );
 
 		wp_localize_script(
 			'sbip_main',
@@ -451,9 +451,9 @@ class Main {
 			$min = '';
 		}
 
-		wp_enqueue_script( 'sbip_admin', $url . '/assets/js/admin' . $min . '.js', [ 'jquery' ], SBIP_PHP_REQUIRED_VERSION, true );
+		wp_enqueue_script( 'sbip_admin', $url . '/assets/js/admin' . $min . '.js', [ 'jquery' ], SBIP_VERSION, true );
 
-		wp_enqueue_style( 'sbip_admin', $url . '/assets/css/admin' . $min . '.css', '', SBIP_PHP_REQUIRED_VERSION );
+		wp_enqueue_style( 'sbip_admin', $url . '/assets/css/admin' . $min . '.css', '', SBIP_VERSION );
 
 		wp_localize_script(
 			'sbip_admin',
