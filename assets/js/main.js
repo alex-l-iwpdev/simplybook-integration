@@ -12,8 +12,8 @@
  */
 
 jQuery( document ).ready( function( $ ) {
-	let selectDate = '';
 	let flag = true;
+	let selectDate = null;
 
 	const doctorsMenu = $( '.doctors-category-menu' );
 	const personalSlider = $( '.doctors-profiles' );
@@ -82,18 +82,11 @@ jQuery( document ).ready( function( $ ) {
 			dateFormat: 'yy-mm-dd',
 			minDate: 0,
 			beforeShowDay: function( date ) {
-				let serviceCount = $( '.service [name=service_id]:checked' ).length;
-				let providerCount = $( '[name=specialist]:checked' ).length;
-
-				if ( serviceCount && providerCount && flag ) {
-					flag = false;
-					getAvailableDate( selectDate );
-				}
-
+				// Просто возвращаем true, не делаем AJAX вызов здесь
 				return [ true, '' ];
 			},
 			onChangeMonthYear: function( year, month, inst ) {
-				const firstDay = new Date( year, month - 1, 1 ); // ← month - 1 обязательно!
+				const firstDay = new Date( year, month - 1, 1 );
 				const formatted = $.datepicker.formatDate( 'yy-mm-dd', firstDay );
 				selectDate = formatted;
 				getAvailableDate( formatted );
@@ -131,6 +124,13 @@ jQuery( document ).ready( function( $ ) {
 		dropdownParent: '.select',
 		width: '100%',
 	} );
+
+	const service = $( '.service [name=service_id]:checked' ).val();
+	const provider = $( '[name=specialist]:checked' ).val();
+
+	if ( service.length && provider.length ) {
+		getAvailableDate();
+	}
 
 	function addSlotTime( date, service, provider ) {
 		const data = {
@@ -279,7 +279,6 @@ jQuery( document ).ready( function( $ ) {
 	}
 
 	function getAvailableDate( date = null ) {
-
 		const preloader = $( '.datepicker-block .pswp__preloader__icn' );
 
 		let data = {
@@ -302,7 +301,9 @@ jQuery( document ).ready( function( $ ) {
 			success: function( res ) {
 				preloader.hide();
 				flag = true;
+
 				if ( res.success && res.data.date.length ) {
+					const defaultViewDate = selectDate || new Date();
 					datePicker.datepicker( 'destroy' ).datepicker( {
 						showButtonPanel: true,
 						changeMonth: true,
@@ -313,30 +314,18 @@ jQuery( document ).ready( function( $ ) {
 						gotoCurrent: true,
 						dateFormat: 'yy-mm-dd',
 						minDate: 0,
-						beforeShow: function( Element ) {
-							let serviceCount = $( '.service [name=service_id]:checked' ).length;
-							let providerCount = $( '[name=specialist]:checked' ).length;
-
-							if ( serviceCount && providerCount && flag ) {
-								flag = false;
-								getAvailableDate( selectDate );
-							}
-
-							return [ true, '' ];
-						},
+						defaultDate: defaultViewDate,
 						beforeShowDay: function( date ) {
-							var string = jQuery.datepicker.formatDate( 'yy-mm-dd', date );
-							return [ res.data.date.indexOf( string ) == -1, 'active-date' ];
+							const string = $.datepicker.formatDate( 'yy-mm-dd', date );
+							return [ res.data.date.indexOf( string ) === -1, 'active-date' ];
 						},
 						onChangeMonthYear: function( year, month, inst ) {
-							const firstDay = new Date( year, month - 1, 1 ); // ← month - 1 обязательно!
+							const firstDay = new Date( year, month - 1, 1 );
 							const formatted = $.datepicker.formatDate( 'yy-mm-dd', firstDay );
 							selectDate = formatted;
-							console.log( formatted );
 							getAvailableDate( formatted );
 						},
 						onSelect: function( dateText, inst ) {
-							console.log( dateText, inst );
 							addSlotTime( dateText, data.service, data.provider );
 							setTimeout( function() {
 								$( '.ui-datepicker-month' ).select2( {
@@ -346,6 +335,7 @@ jQuery( document ).ready( function( $ ) {
 							}, 50 );
 						}
 					} );
+
 					setTimeout( function() {
 						$( '.ui-datepicker-month' ).select2( {
 							minimumResultsForSearch: Infinity,

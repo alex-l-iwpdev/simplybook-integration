@@ -3,7 +3,7 @@
  * Plugin Name: Simplybook integration
  * Plugin URI: https://i-wp-dev.com/
  * Description: Integration of simplybook.me into your website.
- * Version: 1.0.0
+ * Version: 1.0.2
  * Author: alexlavigin
  * Requires at least: 6.5
  * Tested up to: 6.7
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Plugin version.
  */
-const SBIP_VERSION = '1.0.1';
+const SBIP_VERSION = '1.0.2';
 
 /**
  * Plugin dir path.
