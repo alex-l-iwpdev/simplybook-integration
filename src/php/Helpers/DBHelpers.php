@@ -695,11 +695,11 @@ class DBHelpers {
 	/**
 	 * Get services by provider id.
 	 *
-	 * @param int $provider_id Provider id.
+	 * @param array $provider_id Provider id.
 	 *
 	 * @return array|object|stdClass[]
 	 */
-	public static function get_services_by_provider( int $provider_id ) {
+	public static function get_services_by_provider( array $provider_id ) {
 		if ( empty( $provider_id ) ) {
 			return (object) [];
 		}
@@ -707,9 +707,11 @@ class DBHelpers {
 		global $wpdb;
 		$table_name_providers = $wpdb->prefix . 'sbip_services';
 
+		$provider_ids = self::prepare_in( $provider_id );
+
 		//phpcs:disable
-		$sql    = "SELECT * FROM $table_name_providers WHERE `provider_id_sb` = %d ORDER BY `service_sb_id` AND `service_is_visible` = 1 ASC";
-		$result = $wpdb->get_results( $wpdb->prepare( $sql, $provider_id ) );
+		$sql    = "SELECT * FROM $table_name_providers WHERE `provider_id_sb` IN({$provider_ids}) ORDER BY `service_sb_id` AND `service_is_visible` = 1 ASC";
+		$result = $wpdb->get_results( $sql );
 		//phpcs:enable
 
 		if ( empty( $result ) ) {

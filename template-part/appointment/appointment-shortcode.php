@@ -13,7 +13,7 @@ use Iwpdev\SimplybookIntegration\Post\AppointmentPost;
 $locations = FrontEndHelpers::get_location_select_options_array();
 //phpcs:disable
 $providers         = ! empty( $_GET['providers'] ) ? explode( ',', $_GET['providers'] ) : false;
-$provider          = ! empty( $_GET['provider'] ) ? (int) $_GET['provider'] : false;
+$provider          = ! empty( $_GET['provider'] ) ? explode( ',', $_GET['provider'] ) : false;
 $service           = ! empty( $_GET['service'] ) ? (int) $_GET['service'] : DBHelpers::get_services_by_provider( $provider );
 $services          = ! empty( $_GET['services'] ) ? explode( ',', $_GET['services'] ) : false;
 $location_selected = ! empty( $_GET['location'] ) ? (int) $_GET['location'] : $locations[0]['id'];
@@ -57,7 +57,7 @@ $location_selected = ! empty( $_GET['location'] ) ? (int) $_GET['location'] : $l
 			Main::sbip_get_template_part(
 				'appointment/appointment-providers',
 				[
-					'providers'   => [ $provider ],
+					'providers'   => $provider,
 					'location_id' => $location_selected,
 				]
 			);

@@ -8,7 +8,7 @@
 use Iwpdev\SimplybookIntegration\Helpers\DBHelpers;
 use Iwpdev\SimplybookIntegration\Main;
 
-$providers_id = $atts['providers'] ?? [];
+$providers_id = is_array( $atts['providers'] ) ? $atts['providers'] : (int) $atts['providers'][0];
 $location_id  = $atts['location_id'] ?? 0;
 
 $providers          = apply_filters( 'provider_filters', DBHelpers::get_providers_by_ids( $providers_id, $location_id ) );
