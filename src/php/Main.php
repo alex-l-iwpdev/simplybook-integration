@@ -34,7 +34,7 @@ class Main {
 	/**
 	 * Simply Book Base image url.
 	 */
-	const SBIP_BASE_IMAGE_URL = 'https://coma.clinic/';
+	const SBIP_BASE_IMAGE_URL = 'https://jdshop.secure.simplybook.it';
 
 	/**
 	 * Main construct.

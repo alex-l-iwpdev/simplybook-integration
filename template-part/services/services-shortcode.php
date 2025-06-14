@@ -47,11 +47,13 @@ $services = apply_filters( 'service_filters', DBHelpers::get_services_by_categor
 						<h3><?php echo esc_html( $service->service_name ); ?></h3>
 					</div>
 					<div class="td">
-						<?php echo wp_kses_post( $service->service_description ); ?>
-						<!--						<a href="-->
-						<?php //echo esc_url( get_the_permalink( $service->service_post_id ) ); ?><!--" class="more">-->
-						<!--							--><?php //esc_attr_e( 'детальніше', 'simplybook-integration' ); ?>
-						<!--						</a>-->
+						<div class="desc">
+							<?php echo wp_kses_post( $service->service_description ); ?>
+						</div>
+						
+						<a href="#" class="more-desc">
+						<?php esc_attr_e( 'Читати детальніше', 'simplybook-integration' ); ?>
+						</a>
 					</div>
 					<div class="td">
 						<p class="clock"><?php echo esc_html( $service->service_duration . __( ' хв', 'simplybook-integration' ) ); ?></p>
