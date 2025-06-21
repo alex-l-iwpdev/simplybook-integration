@@ -14,9 +14,9 @@ $locations = FrontEndHelpers::get_location_select_options_array();
 //phpcs:disable
 $providers         = ! empty( $_GET['providers'] ) ? explode( ',', $_GET['providers'] ) : false;
 $provider          = ! empty( $_GET['provider'] ) ? explode( ',', $_GET['provider'] ) : false;
-$service           = ! empty( $_GET['service'] ) ? (int) $_GET['service'] : DBHelpers::get_services_by_provider( $provider );
 $services          = ! empty( $_GET['services'] ) ? explode( ',', $_GET['services'] ) : false;
 $location_selected = ! empty( $_GET['location'] ) ? (int) $_GET['location'] : $locations[0]['id'];
+$service           = ! empty( $_GET['service'] ) ? (int) $_GET['service'] : DBHelpers::get_services_by_provider( $provider, $location_selected );
 //phpcs:enable
 
 ?>
