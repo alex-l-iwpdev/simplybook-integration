@@ -100,7 +100,7 @@ jQuery( document ).ready( function( $ ) {
 		} );
 		$( '.ui-datepicker-month' ).select2( {
 			minimumResultsForSearch: Infinity,
-			dropdownParent: '.ui-datepicker-title'
+			dropdownParent: $( '.ui-datepicker-title' )
 		} );
 	}
 	const specialistElements = $( '[name=specialist], [name=service_id]' );
@@ -120,7 +120,7 @@ jQuery( document ).ready( function( $ ) {
 	}
 	$( '.select select' ).select2( {
 		minimumResultsForSearch: Infinity,
-		dropdownParent: '.select',
+		dropdownParent: $( '.select' ),
 		width: '100%'
 	} );
 	const service = $( '.service [name=service_id]:checked' );
@@ -309,7 +309,7 @@ jQuery( document ).ready( function( $ ) {
 							setTimeout( function() {
 								$( '.ui-datepicker-month' ).select2( {
 									minimumResultsForSearch: Infinity,
-									dropdownParent: '.ui-datepicker-title'
+									dropdownParent: $( '.ui-datepicker-title' )
 								} );
 							}, 50 );
 						}
@@ -317,7 +317,7 @@ jQuery( document ).ready( function( $ ) {
 					setTimeout( function() {
 						$( '.ui-datepicker-month' ).select2( {
 							minimumResultsForSearch: Infinity,
-							dropdownParent: '.ui-datepicker-title'
+							dropdownParent: $( '.ui-datepicker-title' )
 						} );
 					}, 50 );
 				}
